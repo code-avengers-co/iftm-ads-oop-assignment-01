@@ -37,4 +37,14 @@ public class ProductDao {
 
         return activeProducts;
     }
+
+    public Product findById(int id) {
+        for (int i = 0; i < count; i++) {
+            if (products[i].getId() == id) {
+                return products[i];
+            }
+        }
+        
+        return null;
+    }
 }
