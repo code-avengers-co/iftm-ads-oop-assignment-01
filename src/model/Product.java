@@ -7,7 +7,7 @@ public class Product {
     private String name;
     private String description;
     private double price;
-    private boolean isActive;
+    private boolean active;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -15,6 +15,7 @@ public class Product {
         this.name = name;
         this.price = price;
         this.createdAt = LocalDateTime.now();
+        this.active = true; 
     }
 
     public int getId() {
@@ -45,12 +46,12 @@ public class Product {
         this.price = price;
     }
 
-    public boolean getIsActive() {
-        return isActive;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setIsActive(boolean isActive) {
-        this.isActive = isActive;
+    public void setActive(boolean isActive) {
+        this.active = isActive;
     }
 
     public LocalDateTime getCreatedAt() {
