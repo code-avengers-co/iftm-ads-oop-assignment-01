@@ -15,7 +15,7 @@ public class Product {
         this.name = name;
         this.price = price;
         this.createdAt = LocalDateTime.now();
-        this.active = true; 
+        this.active = true;
     }
 
     public int getId() {
