@@ -44,7 +44,17 @@ public class ProductDao {
                 return products[i];
             }
         }
-        
+
         return null;
+    }
+    
+    public boolean deleteProduct(int id){
+        Product product = findById(id);
+        if (product == null){
+            return false;
+        }
+
+        product.setActive(false);
+        return true;
     }
 }
