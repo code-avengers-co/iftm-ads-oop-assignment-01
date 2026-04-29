@@ -12,11 +12,14 @@ public class ProductDao {
     }
 
     public boolean saveProduct(Product product){
+        // The products array is full
         if (count + 1 == products.length){
             return false;
         }
 
+        // Storage the product on array and increase count +1
         products[count] = product;
+        count++;
 
         return true;
     }
