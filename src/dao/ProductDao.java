@@ -13,14 +13,28 @@ public class ProductDao {
 
     public boolean saveProduct(Product product){
         // The products array is full
-        if (count + 1 == products.length){
+        if (count >= products.length){
             return false;
         }
 
-        // Storage the product on array and increase count +1
+        // Store the product in the array and increase count
         products[count] = product;
         count++;
 
         return true;
+    }
+
+    public Product[] getActiveProducts(){
+        Product[] activeProducts = new Product[count];
+        int activeProductsCount = 0;
+
+        for (int i = 0; i < count; i++) {
+            if (products[i] != null && products[i].isActive()) {
+                activeProducts[activeProductsCount] = products[i];
+                activeProductsCount++;
+            }
+        }
+
+        return activeProducts;
     }
 }
