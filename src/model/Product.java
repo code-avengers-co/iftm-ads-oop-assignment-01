@@ -12,6 +12,7 @@ public class Product {
     private LocalDateTime updatedAt;
 
     public Product(int id, String name, double price){
+        this.id = id;
         this.name = name;
         this.price = price;
         this.createdAt = LocalDateTime.now();
