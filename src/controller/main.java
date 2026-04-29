@@ -32,5 +32,26 @@ public class main {
                 System.out.println("ID: " + actives[i].getId() + " | Name: " + actives[i].getName());
             }
         }
+
+        // 5. Test updating a product
+        System.out.println("\n--- Testing Update ---");
+
+        // Simulating data coming from the View/Controller
+        Product updatedData = new Product(1, "Mechanical Keyboard RGB", 180.00);
+        updatedData.setDescription("Now with RGB lighting!");
+        updatedData.setActive(true);
+
+        // Call the update method
+        boolean isUpdated = dao.updateProduct(updatedData);
+        System.out.println("Update successful? " + isUpdated);
+
+        // 6. Verify if the update actually changed the object in memory
+        Product verifiedProduct = dao.findById(1);
+        if (verifiedProduct != null) {
+            System.out.println("New Name: " + verifiedProduct.getName());
+            System.out.println("New Price: " + verifiedProduct.getPrice());
+            System.out.println("New Description: " + verifiedProduct.getDescription());
+            System.out.println("Updated At: " + verifiedProduct.getUpdatedAt());
+        }
     }
 }
