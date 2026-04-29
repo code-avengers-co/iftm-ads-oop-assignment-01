@@ -2,6 +2,8 @@ package dao;
 
 import model.Product;
 
+import java.time.LocalDateTime;
+
 public class ProductDao {
     private Product[] products;
     private int count; // Current products count
@@ -47,7 +49,22 @@ public class ProductDao {
 
         return null;
     }
-    
+
+    public boolean updateProduct(Product updatedProduct){
+        Product product = findById(updatedProduct.getId());
+        if (product == null){
+            return false;
+        }
+
+        product.setName(updatedProduct.getName());
+        product.setDescription(updatedProduct.getDescription());
+        product.setPrice(updatedProduct.getPrice());
+        product.setActive(updatedProduct.isActive());
+        product.setUpdatedAt(LocalDateTime.now());
+
+        return true;
+    }
+
     public boolean deleteProduct(int id){
         Product product = findById(id);
         if (product == null){
