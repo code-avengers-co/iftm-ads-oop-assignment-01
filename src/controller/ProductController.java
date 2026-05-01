@@ -37,4 +37,8 @@ public class ProductController {
 
         return productDao.updateProduct(updatedData);
     }
+
+    public boolean deleteProduct(int id){
+        return productDao.deleteProduct(id);
+    }
 }

@@ -29,6 +29,9 @@ public class ProductView {
                 case 3:
                     renderUpdateProduct();
                     break;
+                case 4:
+                    renderDeleteProduct();
+                    break;
                 case 0:
                     System.out.println("Exiting...");
                     break;
@@ -42,6 +45,7 @@ public class ProductView {
                 1 - Register Product
                 2 - List Products
                 3 - Edit Product
+                4 - Delete Product
                 0 - Back
                 """;
         System.out.print(menu);
@@ -50,7 +54,7 @@ public class ProductView {
         do {
             System.out.print("Choose an option: ");
             option = Integer.parseInt(scanner.nextLine());
-        } while (option < 0 || option > 3);
+        } while (option < 0 || option > 4);
 
         return option;
     }
@@ -76,34 +80,27 @@ public class ProductView {
         }
     }
 
-    private void renderListProducts(){
+    private void renderListProducts() {
         System.out.println("Listing all active products...");
-
         Product[] activeProducts = productController.getActiveProducts();
-        if (activeProducts.length == 0){
-            System.out.println("No active products found.");
+
+        if (activeProducts.length == 0) {
+            System.out.println("No active products found.\n");
             return;
         }
 
-        for (Product product : activeProducts) {
-            if (product != null) {
-                System.out.println(product);
-            }
-        }
+        showProductList("", activeProducts);
     }
 
     private void renderUpdateProduct() {
-        StringBuilder message = new StringBuilder("--- EDIT PRODUCT ---");
-        message.append("\nAvailable products:");
-
         Product[] allProducts = productController.getAllProducts();
-        for (Product product : allProducts) {
-            if (product != null) {
-                message.append("\n").append(product);
-            }
+        if (allProducts.length == 0){
+            System.out.println("--- EDIT PRODUCT ---");
+            System.out.println("No products available to edit.\n");
+            return;
         }
 
-        System.out.println(message);
+        showProductList("--- EDIT PRODUCT ---\nPRODUCT LIST:", allProducts);
 
         System.out.print("Enter the ID of the product to edit: ");
         int id = Integer.parseInt(scanner.nextLine());
@@ -122,10 +119,53 @@ public class ProductView {
 
         boolean isUpdated = productController.updateProduct(id, name, price);
 
-        if (isUpdated){
+        if (isUpdated) {
             System.out.println("Product updated successfully!");
         } else {
             System.out.println("Error: Product not found.");
+        }
+    }
+
+    private void renderDeleteProduct() {
+        Product[] activeProducts = productController.getActiveProducts();
+
+        if (activeProducts.length == 0) {
+            System.out.println("--- DELETE PRODUCT ---");
+            System.out.println("No active products available to delete.\n");
+            return;
+        }
+
+        showProductList("--- DELETE PRODUCT ---\nAvailable products:", activeProducts);
+        System.out.print("Enter the ID of the product to delete: ");
+        int id = Integer.parseInt(scanner.nextLine());
+
+        System.out.println("Are you sure you want to delete this product? (Y/N)");
+        String confirmation = scanner.nextLine();
+
+        if (confirmation.equalsIgnoreCase("Y")) {
+            boolean isDeleted = productController.deleteProduct(id);
+            if (isDeleted) {
+                System.out.println("Product deleted successfully!");
+            } else {
+                System.out.println("Error: Product not found.");
+            }
+        } else {
+            System.out.println("Deletion cancelled.");
+        }
+    }
+
+    void showProductList(String title, Product[] products) {
+        System.out.println(title);
+
+        if (products.length == 0){
+            System.out.println("No products found.");
+            return;
+        }
+
+        for (Product product : products) {
+            if (product != null) {
+                System.out.println(product);
+            }
         }
     }
 }
