@@ -62,7 +62,7 @@ public class ProductView {
     private void renderRegisterProduct() {
         System.out.println("Enter product details:");
 
-        int generatedId = CreationIdUtils.getNextProductId();
+        int generatedId = CreationIdUtils.generateProductId();
 
         System.out.print("Name: ");
         String name = scanner.nextLine();
