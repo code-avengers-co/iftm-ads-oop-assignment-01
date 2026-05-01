@@ -26,6 +26,20 @@ public class ProductDao {
         return true;
     }
 
+    public Product[] getAllProducts(){
+        Product[] allProducts = new Product[count];
+        int currentIndex = 0;
+
+        for (int i = 0; i < count; i++) {
+            if (products[i] != null) {
+                allProducts[currentIndex] = products[i];
+                currentIndex++;
+            }
+        }
+
+        return allProducts;
+    }
+
     public Product[] getActiveProducts(){
         Product[] activeProducts = new Product[count];
         int activeProductsCount = 0;

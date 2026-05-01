@@ -69,6 +69,9 @@ public class Product {
 
     @Override
     public String toString() {
-        return "ID: " + this.getId() + ", Name: " + this.getName() + ", Price: " + this.getPrice();
+        return "ID: " + this.getId() +
+                ", Name: " + this.getName() +
+                ", Price: " + this.getPrice() +
+                ", Status: " + (this.isActive() ? "Active" : "Inactive");
     }
 }

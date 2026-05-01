@@ -26,6 +26,9 @@ public class ProductView {
                 case 2:
                     renderListProducts();
                     break;
+                case 3:
+                    renderUpdateProduct();
+                    break;
                 case 0:
                     System.out.println("Exiting...");
                     break;
@@ -38,6 +41,7 @@ public class ProductView {
                 --- PRODUCT MENU ---
                 1 - Register Product
                 2 - List Products
+                3 - Edit Product
                 0 - Back
                 """;
         System.out.print(menu);
@@ -46,7 +50,7 @@ public class ProductView {
         do {
             System.out.print("Choose an option: ");
             option = Integer.parseInt(scanner.nextLine());
-        } while (option < 0 || option > 2);
+        } while (option < 0 || option > 3);
 
         return option;
     }
@@ -85,6 +89,43 @@ public class ProductView {
             if (product != null) {
                 System.out.println(product);
             }
+        }
+    }
+
+    private void renderUpdateProduct() {
+        StringBuilder message = new StringBuilder("--- EDIT PRODUCT ---");
+        message.append("\nAvailable products:");
+
+        Product[] allProducts = productController.getAllProducts();
+        for (Product product : allProducts) {
+            if (product != null) {
+                message.append("\n").append(product);
+            }
+        }
+
+        System.out.println(message);
+
+        System.out.print("Enter the ID of the product to edit: ");
+        int id = Integer.parseInt(scanner.nextLine());
+
+        boolean hasProduct = productController.hasProduct(id);
+        if (!hasProduct) {
+            System.out.println("Error: Product not found.");
+            return;
+        }
+
+        System.out.print("New Name: ");
+        String name = scanner.nextLine();
+
+        System.out.print("New Price: ");
+        double price = Double.parseDouble(scanner.nextLine());
+
+        boolean isUpdated = productController.updateProduct(id, name, price);
+
+        if (isUpdated){
+            System.out.println("Product updated successfully!");
+        } else {
+            System.out.println("Error: Product not found.");
         }
     }
 }
