@@ -66,4 +66,9 @@ public class Product {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    @Override
+    public String toString() {
+        return "ID: " + this.getId() + ", Name: " + this.getName() + ", Price: " + this.getPrice();
+    }
 }

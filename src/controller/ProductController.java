@@ -17,4 +17,8 @@ public class ProductController {
         // 2. Send to DAO
         return productDao.saveProduct(newProduct);
     }
+
+    public Product[] getActiveProducts() {
+        return productDao.getActiveProducts();
+    }
 }

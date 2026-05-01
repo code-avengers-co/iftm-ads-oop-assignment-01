@@ -1,6 +1,7 @@
 package view;
 
 import controller.ProductController;
+import model.Product;
 import utils.ProductUtils;
 
 import java.util.Scanner;
@@ -23,7 +24,7 @@ public class ProductView {
                     renderRegisterProduct();
                     break;
                 case 2:
-                    System.out.println("Listing all products...");
+                    renderListProducts();
                     break;
                 case 0:
                     System.out.println("Exiting...");
@@ -68,6 +69,22 @@ public class ProductView {
             System.out.println("Product saved successfully!");
         } else {
             System.out.println("Error: Database is full.");
+        }
+    }
+
+    private void renderListProducts(){
+        System.out.println("Listing all active products...");
+
+        Product[] activeProducts = productController.getActiveProducts();
+        if (activeProducts.length == 0){
+            System.out.println("No active products found.");
+            return;
+        }
+
+        for (Product product : activeProducts) {
+            if (product != null) {
+                System.out.println(product);
+            }
         }
     }
 }
