@@ -1,6 +1,7 @@
 package view;
 
 import controller.UserController;
+import model.User;
 import utils.CreationIdUtils;
 
 import java.time.LocalDate;
@@ -25,8 +26,7 @@ public class UserView {
                     renderRegisterUser();
                     break;
                 case 2:
-                    System.out.println("Listing users...");
-                    // renderListUsers();
+                    renderListUsers();
                     break;
                 case 0:
                     System.out.println("Exiting User Menu...");
@@ -51,7 +51,7 @@ public class UserView {
             try {
                 option = Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e) {
-                System.out.println("Error: Invalid input! Please enter a number.");;
+                System.out.println("Error: Invalid input! Please enter a number.");
             }
         } while (option < 0 || option > 2);
 
@@ -95,6 +95,14 @@ public class UserView {
             System.out.println("\nUser registered successfully!");
         } else {
             System.out.println("\nError: Could not register user. Database might be full.");
+        }
+    }
+
+    private void renderListUsers(){
+        System.out.println("Listing all users...");
+        User[] users = userController.getUsers();
+        for (User user : users) {
+            System.out.println(user);
         }
     }
 }
