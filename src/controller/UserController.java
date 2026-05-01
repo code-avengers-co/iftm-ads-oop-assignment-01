@@ -2,6 +2,10 @@ package controller;
 
 import dao.PersonDao;
 import dao.UserDao;
+import model.Person;
+import model.User;
+
+import java.time.LocalDate;
 
 public class UserController {
     private UserDao userDao;
@@ -10,5 +14,28 @@ public class UserController {
     public UserController(UserDao userDao, PersonDao personDao) {
         this.userDao = userDao;
         this.personDao = personDao;
+    }
+
+    public boolean registerUser(
+            int personId, String personName, LocalDate personBirthDate, String personDocument,
+            int userId, String username, String password) {
+        // 1. Create the person
+        Person person = new Person(personId, personName, personBirthDate, personDocument);
+        boolean personIsCreated = personDao.savePerson(person);
+        if (!personIsCreated){
+            return false; // Failed to create person, so not proceed with user creation
+        }
+
+        // 2. Create the user
+        User user = new User(userId, person, username, password);
+        boolean userIsCreated = userDao.saveUser(user);
+
+        // 3. Rollback person
+        if (!userIsCreated) {
+            personDao.deletePerson(personId);
+            return false;
+        }
+
+        return true;
     }
 }
