@@ -17,6 +17,7 @@ public class PersonDao {
         if (personCount >= personDb.length) {
             return false; // No more space to save new person
         }
+
         personDb[personCount] = person;
         personCount++;
 
