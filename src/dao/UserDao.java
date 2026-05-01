@@ -35,4 +35,16 @@ public class UserDao {
 
         return users;
     }
+
+    public User findById(int id){
+        for (int i = 0; i < userCount; i++) {
+            if (userDb[i].getId() == id) {
+                return userDb[i];
+            }
+        }
+
+        return null; // User not found
+    }
+
+    
 }
