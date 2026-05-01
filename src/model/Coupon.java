@@ -1,5 +1,6 @@
 package model;
 
+import javax.swing.text.html.HTMLDocument;
 import java.time.LocalDateTime;
 
 public class Coupon {
@@ -13,8 +14,15 @@ public class Coupon {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Coupon() {
-
+    public Coupon(int id, String code, String discounType, double discountValue, double minimumPrice, LocalDateTime expiresAt) {
+        this.id = id;
+        this.code = code;
+        this.discountType = discounType;
+        this.discountValue = discountValue;
+        this.minimumPrice = minimumPrice;
+        this.expiresAt = expiresAt;
+        this.active = true;
+        this.createdAt = LocalDateTime.now();
     }
 
     public int getId() { return id; }
