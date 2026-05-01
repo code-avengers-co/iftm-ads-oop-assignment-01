@@ -1,9 +1,6 @@
-package controller;
-
+import controller.CouponController;
 import dao.CouponDao;
-import dao.ProductDao;
 import view.CouponView;
-import view.ProductView;
 
 public class main {
     static void main(String[] args) {
