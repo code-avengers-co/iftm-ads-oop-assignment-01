@@ -34,4 +34,14 @@ public class PersonDao {
 
         return allPersons;
     }
+
+    public Person findById(int id) {
+        for (int i = 0; i < personCount; i++) {
+            if (personDb[i].getId() == id) {
+                return personDb[i];
+            }
+        }
+
+        return null; // Person not found
+    }
 }
