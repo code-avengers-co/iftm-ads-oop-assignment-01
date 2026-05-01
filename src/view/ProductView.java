@@ -63,7 +63,6 @@ public class ProductView {
         System.out.println("Enter product details:");
 
         int generatedId = ProductUtils.getNextId();
-        System.out.println("Generated ID: " + generatedId);
 
         System.out.print("Name: ");
         String name = scanner.nextLine();
@@ -85,7 +84,7 @@ public class ProductView {
         Product[] activeProducts = productController.getActiveProducts();
 
         if (activeProducts.length == 0) {
-            System.out.println("No active products found.\n");
+            System.out.println("No active products found.");
             return;
         }
 
@@ -96,7 +95,7 @@ public class ProductView {
         Product[] allProducts = productController.getAllProducts();
         if (allProducts.length == 0){
             System.out.println("--- EDIT PRODUCT ---");
-            System.out.println("No products available to edit.\n");
+            System.out.println("No products available to edit.");
             return;
         }
 
@@ -131,7 +130,7 @@ public class ProductView {
 
         if (activeProducts.length == 0) {
             System.out.println("--- DELETE PRODUCT ---");
-            System.out.println("No active products available to delete.\n");
+            System.out.println("No active products available to delete.");
             return;
         }
 
@@ -155,7 +154,9 @@ public class ProductView {
     }
 
     void showProductList(String title, Product[] products) {
-        System.out.println(title);
+        if (title != null && !title.isEmpty()) {
+            System.out.println(title);
+        }
 
         if (products.length == 0){
             System.out.println("No products found.");
