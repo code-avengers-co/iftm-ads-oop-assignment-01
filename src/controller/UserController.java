@@ -38,4 +38,8 @@ public class UserController {
 
         return true;
     }
+
+    public User[] getUsers(){
+        return userDao.getUsers();
+    }
 }
