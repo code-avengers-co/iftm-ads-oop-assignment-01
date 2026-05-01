@@ -101,6 +101,12 @@ public class UserView {
     private void renderListUsers(){
         System.out.println("Listing all users...");
         User[] users = userController.getUsers();
+
+        if (users.length == 0) {
+            System.out.println("No users registered yet.");
+            return;
+        }
+
         for (User user : users) {
             System.out.println(user);
         }
