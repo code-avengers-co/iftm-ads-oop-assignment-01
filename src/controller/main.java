@@ -1,13 +1,18 @@
 package controller;
 
 import dao.ProductDao;
+import view.CouponView;
 import view.ProductView;
 
 public class main {
     static void main(String[] args) {
-        ProductDao dao = new ProductDao(100);
-        ProductController controller = new ProductController(dao);
-        ProductView view = new ProductView(controller);
+        //ProductDao dao = new ProductDao(100);
+        //ProductController controller = new ProductController(dao);
+        //ProductView view = new ProductView(controller);
+
+        //view.showMenu();
+
+        CouponView view = new CouponView();
 
         view.showMenu();
     }
