@@ -58,4 +58,11 @@ public class Person {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-}
+
+    @Override
+    public String toString() {
+        return "Person ID: " + this.getId() +
+                " | Name: " + this.getName() +
+                " | Document: " + this.getDocument() +
+                " | Birth Date: " + this.getBirthDate();
+    }}
