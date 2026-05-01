@@ -1,11 +1,15 @@
 package view;
 
+import controller.CouponController;
+
 import java.util.Scanner;
 
 public class CouponView {
+    private CouponController couponController;
     private Scanner scanner;
 
-    public CouponView() {
+    public CouponView(CouponController controller) {
+        this.couponController = controller;
         this.scanner = new Scanner(System.in);
     }
 

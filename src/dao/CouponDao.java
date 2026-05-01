@@ -25,5 +25,4 @@ public class CouponDao {
         return true;
     }
 
-
 }
