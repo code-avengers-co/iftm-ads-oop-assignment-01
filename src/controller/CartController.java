@@ -86,4 +86,15 @@ public class CartController {
         // Return the items of the open cart
         return cartItemDao.findItemsByCartId(openCart.getId());
     }
+
+    public double getLoggedUserCartTotal() {
+        CartItem[] items = getLoggedUserCartItems();
+        double total = 0;
+
+        for (CartItem item : items) {
+            total += item.getQuantity() * item.getUnitPrice();
+        }
+
+        return total;
+    }
 }
