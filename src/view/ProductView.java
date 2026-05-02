@@ -2,7 +2,7 @@ package view;
 
 import controller.ProductController;
 import model.Product;
-import utils.ProductUtils;
+import utils.CreationIdUtils;
 
 import java.util.Scanner;
 
@@ -62,7 +62,7 @@ public class ProductView {
     private void renderRegisterProduct() {
         System.out.println("Enter product details:");
 
-        int generatedId = ProductUtils.getNextId();
+        int generatedId = CreationIdUtils.generateProductId();
 
         System.out.print("Name: ");
         String name = scanner.nextLine();
