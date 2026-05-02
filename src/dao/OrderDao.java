@@ -2,6 +2,8 @@ package dao;
 
 import model.Order;
 
+import java.time.LocalDateTime;
+
 public class OrderDao {
     private Order[] orderDb;
     private int orderCount;
@@ -42,7 +44,42 @@ public class OrderDao {
                 return orderDb[i];
             }
         }
-        
+
         return null; // Order not found
+    }
+
+    public boolean updateOrder(Order updatedOrder){
+        Order order = findById(updatedOrder.getId());
+        if (order == null) {
+            return false; // Order not found
+        }
+
+        order.setStatus(updatedOrder.getStatus());
+        order.setCoupon(updatedOrder.getCoupon());
+        order.setTotalValue(updatedOrder.getTotalValue());
+        order.setPaymentMethod(updatedOrder.getPaymentMethod());
+        order.setUpdatedAt(LocalDateTime.now());
+
+        return true;
+    }
+
+    public boolean deleteOrder(int id){
+        int indexToDelete = -1;
+        for (int i = 0; i < orderCount; i++) {
+            if (orderDb[i].getId() == id){
+                indexToDelete = i;
+                break;
+            }
+        }
+
+        if (indexToDelete == -1){
+            return false; // Order not found
+        }
+
+        orderDb[indexToDelete] = orderDb[orderCount - 1];
+        orderDb[orderCount - 1] = null;
+        orderCount--;
+
+        return true;
     }
 }

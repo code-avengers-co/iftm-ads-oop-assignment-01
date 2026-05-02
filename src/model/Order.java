@@ -66,6 +66,10 @@ public class Order {
         return paymentMethod;
     }
 
+    public void setPaymentMethod(String paymentMethod){
+        this.paymentMethod = paymentMethod;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
