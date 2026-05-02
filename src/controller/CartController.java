@@ -69,4 +69,21 @@ public class CartController {
 
         return cartItemDao.saveCartItem(newCartItem);
     }
+
+    public CartItem[] getLoggedUserCartItems() {
+        if (!UserSession.isLoggedIn()) {
+            return new CartItem[0]; // User is not logged in, return empty array
+        }
+
+        int userId = UserSession.getLoggedUser().getId();
+        Cart openCart = cartDao.findOpenCartByUser(userId);
+
+        // If there is no open cart for the user, return an empty array
+        if (openCart == null) {
+            return new CartItem[0];
+        }
+
+        // Return the items of the open cart
+        return cartItemDao.findItemsByCartId(openCart.getId());
+    }
 }
