@@ -48,6 +48,16 @@ public class StockMovementDao {
         return stockMovements;
     }
 
+    public StockMovement findMovementsByProductId(int productId){
+        for (int i = 0; i < stockMovementCount; i++) {
+            if (stockMovementDb[i].getProduct().getId() == productId){
+                return stockMovementDb[i];
+            }
+        }
+
+        return null; // No stock movement found for the given product ID
+    }
+
     public boolean updateStockMovement(StockMovement updatedStockMovement) {
         StockMovement stockMovement = findById(updatedStockMovement.getId());
         if (stockMovement == null) {
