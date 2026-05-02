@@ -5,18 +5,18 @@ import java.time.LocalDateTime;
 public class CartItem {
     private int id;
     private Cart cart;
+    private Product product;
     private int quantity;
     private double unitPrice;
-    private double subTotal;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public CartItem(int id, Cart cart, int quantity, double unitPrice) {
+    public CartItem(int id, Cart cart, Product product, int quantity, double unitPrice) {
         this.id = id;
         this.cart = cart;
+        this.product = product;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
-        this.subTotal = quantity * unitPrice;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
@@ -33,13 +33,20 @@ public class CartItem {
         this.cart = cart;
     }
 
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
     public int getQuantity() {
         return quantity;
     }
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-        this.subTotal = quantity * this.unitPrice;
     }
 
     public double getUnitPrice() {
@@ -48,11 +55,6 @@ public class CartItem {
 
     public void setUnitPrice(double unitPrice) {
         this.unitPrice = unitPrice;
-        this.subTotal = this.quantity * this.unitPrice;
-    }
-
-    public double getSubTotal() {
-        return subTotal;
     }
 
     public LocalDateTime getCreatedAt() {

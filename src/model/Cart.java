@@ -11,10 +11,10 @@ public class Cart {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Cart(int id, User user, CartStatus status) {
+    public Cart(int id, User user) {
         this.id = id;
         this.user = user;
-        this.status = status;
+        this.status = CartStatus.Open;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
