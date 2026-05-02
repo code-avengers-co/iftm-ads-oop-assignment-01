@@ -35,4 +35,14 @@ public class OrderDao {
 
         return orders;
     }
+    
+    public Order findById(int id){
+        for (int i = 0; i < orderCount; i++) {
+            if (orderDb[i].getId() == id) {
+                return orderDb[i];
+            }
+        }
+        
+        return null; // Order not found
+    }
 }
