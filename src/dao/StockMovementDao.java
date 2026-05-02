@@ -2,6 +2,8 @@ package dao;
 
 import model.StockMovement;
 
+import java.time.LocalDateTime;
+
 public class StockMovementDao {
     private StockMovement[] stockMovementDb;
     private int stockMovementCount;
@@ -44,5 +46,19 @@ public class StockMovementDao {
         }
 
         return stockMovements;
+    }
+
+    public boolean updateStockMovement(StockMovement updatedStockMovement) {
+        StockMovement stockMovement = findById(updatedStockMovement.getId());
+        if (stockMovement == null) {
+            return false; // Stock movement not found
+        }
+
+        stockMovement.setQuantity(updatedStockMovement.getQuantity());
+        stockMovement.setType(updatedStockMovement.getType());
+        stockMovement.setUnitValue(updatedStockMovement.getUnitValue());
+        stockMovement.setUpdatedAt(LocalDateTime.now());
+
+        return true;
     }
 }
