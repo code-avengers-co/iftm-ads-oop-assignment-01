@@ -6,6 +6,7 @@ import controller.UserController;
 import model.CartItem;
 import model.Product;
 import model.User;
+import utils.InputUtils;
 import utils.UserSession;
 
 import java.util.Scanner;
@@ -45,23 +46,25 @@ public class MainView {
     }
 
     private void showAvailableProducts() {
-        System.out.println("--- PRODUCTS ON SALE ---");
+        System.out.println("--- PRODUCTS ON SALE ------------------------------------------");
 
         Product[] products = productController.getActiveProducts();
         for (Product p : products) {
             System.out.println(p);
         }
 
-        System.out.println("------------------------\n");
+        System.out.println("---------------------------------------------------------------");
     }
 
     private int showGuestMenu() {
-        System.out.println("1 - Login");
-        System.out.println("2 - Create Account");
-        System.out.println("0 - Exit");
-        System.out.print("Choose an option: ");
+        String menu = """ 
+                      1 - Login
+                      2 - Create Account
+                      0 - Exit
+                      """;
+        System.out.printf(menu);
 
-        int option = Integer.parseInt(scanner.nextLine());
+        int option = InputUtils.readInt("Choose an option: ", 0, 2);
         switch (option) {
             case 1:
                 handleLogin();
@@ -85,9 +88,8 @@ public class MainView {
         System.out.println("2 - View Cart");
         System.out.println("9 - Logout");
         System.out.println("0 - Exit");
-        System.out.print("Choose an option: ");
 
-        int option = Integer.parseInt(scanner.nextLine());
+        int option = InputUtils.readInt("Choose an option: ", 0, 9);
 
         switch (option) {
             case 1:
