@@ -28,7 +28,7 @@ public class MainView {
         // 2. Show the menu based on login status
         int option;
         do {
-            // If not logged in, show options to login or create account
+            // If not logged in, show options to log in or create account
             if (!UserSession.isLoggedIn()) {
                 option = showGuestMenu();
             } else {
@@ -39,7 +39,7 @@ public class MainView {
     }
 
     private void showAvailableProducts() {
-        System.out.println("\n--- PRODUCTS ON SALE ---");
+        System.out.println("--- PRODUCTS ON SALE ---");
 
         Product[] products = productController.getActiveProducts();
         for (Product p : products) {
