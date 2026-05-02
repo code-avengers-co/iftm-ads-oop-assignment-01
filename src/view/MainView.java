@@ -83,7 +83,27 @@ public class MainView {
         System.out.println("0 - Exit");
         System.out.print("Choose an option: ");
 
-        return Integer.parseInt(scanner.nextLine());
+        int option = Integer.parseInt(scanner.nextLine());
+
+        switch (option) {
+            case 1:
+                System.out.println("Adding item to cart... (not implemented yet)");
+                break;
+            case 2:
+                System.out.println("Viewing cart... (not implemented yet)");
+                break;
+            case 9:
+                UserSession.logout();
+                System.out.println("Logged out successfully.");
+                break;
+            case 0:
+                System.out.println("Exiting... Goodbye Human!");
+                break;
+            default:
+                System.out.println("Invalid option. Try again.");
+        }
+
+        return option;
     }
 
     private void handleLogin() {

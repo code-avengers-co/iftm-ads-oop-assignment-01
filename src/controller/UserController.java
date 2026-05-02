@@ -14,6 +14,11 @@ public class UserController {
     public UserController(UserDao userDao, PersonDao personDao) {
         this.userDao = userDao;
         this.personDao = personDao;
+
+        registerUser(
+                1, "Lucas", LocalDate.of(1990, 1, 1), "123456789",
+                1, "devluquinha", "123"
+        );
     }
 
     public boolean registerUser(
