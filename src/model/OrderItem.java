@@ -11,7 +11,7 @@ public class OrderItem {
      private double subTotal;
      private LocalDateTime createdAt;
      private LocalDateTime updatedAt;
-     
+
     public OrderItem(int id, Order order, Product product, int quantity, double unitPrice) {
         this.id = id;
         this.order = order;
@@ -50,6 +50,7 @@ public class OrderItem {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+        this.subTotal = this.quantity * this.unitPrice;
     }
 
     public double getUnitPrice() {
@@ -58,6 +59,7 @@ public class OrderItem {
 
     public void setUnitPrice(double unitPrice) {
         this.unitPrice = unitPrice;
+        this.subTotal = this.quantity * this.unitPrice;
     }
 
     public double getSubTotal() {

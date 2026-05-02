@@ -58,6 +58,10 @@ public class Order {
         return totalValue;
     }
 
+    public void setTotalValue(double totalValue) {
+        this.totalValue = totalValue;
+    }
+
     public String getPaymentMethod() {
         return paymentMethod;
     }
