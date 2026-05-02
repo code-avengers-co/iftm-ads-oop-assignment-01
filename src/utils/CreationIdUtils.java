@@ -6,6 +6,8 @@ public class CreationIdUtils {
     private static int nextUserId = 1;
     private static int nextCartId = 1;
     private static int nextCartItemId = 1;
+    private static int nextOrderId = 1;
+    private static int nextOrderItemId = 1;
 
     public static int generateProductId(){
         int idToReturn = nextProductId;
@@ -34,6 +36,18 @@ public class CreationIdUtils {
     public static int generateCartItemId() {
         int idToReturn = nextCartItemId;
         nextCartItemId++;
+        return idToReturn;
+    }
+
+    public static int generateOrderId() {
+        int idToReturn = nextOrderId;
+        nextOrderId++;
+        return idToReturn;
+    }
+
+    public static int generateOrderItemId() {
+        int idToReturn = nextOrderItemId;
+        nextOrderItemId++;
         return idToReturn;
     }
 }
