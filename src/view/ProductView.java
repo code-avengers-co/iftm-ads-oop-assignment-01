@@ -3,6 +3,7 @@ package view;
 import controller.ProductController;
 import model.Product;
 import utils.CreationIdUtils;
+import utils.InputUtils;
 
 import java.util.Scanner;
 
@@ -48,15 +49,9 @@ public class ProductView {
                 4 - Delete Product
                 0 - Back
                 """;
-        System.out.print(menu);
+        System.out.println(menu);
 
-        int option = -1;
-        do {
-            System.out.print("Choose an option: ");
-            option = Integer.parseInt(scanner.nextLine());
-        } while (option < 0 || option > 4);
-
-        return option;
+        return InputUtils.readInt("Choose an option: ", 0, 4);
     }
 
     private void renderRegisterProduct() {
