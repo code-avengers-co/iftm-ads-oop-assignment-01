@@ -21,7 +21,7 @@ public class Main {
         // 3. Create Views
         ProductView productView = new ProductView(productController);
         UserView userView = new UserView(userController);
-        MainView mainView = new MainView(productController, userController);
+        MainView mainView = new MainView(productController, userController, userView);
 
         // 4. Call test
         mainView.start();

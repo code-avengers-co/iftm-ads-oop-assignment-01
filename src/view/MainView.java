@@ -11,11 +11,13 @@ import java.util.Scanner;
 public class MainView {
     private ProductController productController;
     private UserController userController;
+    private UserView userView;
     private Scanner scanner;
 
-    public MainView(ProductController productController, UserController userController) {
+    public MainView(ProductController productController, UserController userController, UserView userView) {
         this.productController = productController;
         this.userController = userController;
+        this.userView = userView;
         this.scanner = new Scanner(System.in);
     }
 
@@ -61,11 +63,10 @@ public class MainView {
                 handleLogin();
                 break;
             case 2:
-                // handleCreateAccount();
-                System.out.println("Account creation not implemented yet.");
+                handleCreateAccount();
                 break;
             case 0:
-                System.out.println("Exiting... Goodbye!");
+                System.out.println("Exiting... Goodbye Human!");
                 break;
             default:
                 System.out.println("Invalid option. Try again.");
@@ -100,5 +101,9 @@ public class MainView {
         } else {
             System.out.println("Invalid credentials. Try again.");
         }
+    }
+
+    private void handleCreateAccount(){
+        userView.renderRegisterUser();
     }
 }

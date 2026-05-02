@@ -58,7 +58,7 @@ public class UserView {
         return option;
     }
 
-    private void renderRegisterUser() {
+    public void renderRegisterUser() {
         System.out.println("\n--- REGISTER NEW USER ---");
 
         int personId = CreationIdUtils.generatePersonId();
