@@ -21,4 +21,28 @@ public class StockMovementDao {
 
         return true;
     }
+
+    public StockMovement findById(int id){
+        for (int i = 0; i < stockMovementCount; i++) {
+            if (stockMovementDb[i].getId() == id){
+                return stockMovementDb[i];
+            }
+        }
+
+        return null; // Stock movement not found
+    }
+
+    public StockMovement[] getAllStockMovement(){
+        StockMovement[] stockMovements = new StockMovement[stockMovementCount];
+        int currentIndex = 0;
+
+        for (int i = 0; i < stockMovementCount; i++) {
+            if (stockMovementDb[i] != null){
+                stockMovements[currentIndex] = stockMovementDb[i];
+                currentIndex++;
+            }
+        }
+
+        return stockMovements;
+    }
 }
