@@ -1,7 +1,9 @@
 package view;
 
+import controller.CartController;
 import controller.ProductController;
 import controller.UserController;
+import model.CartItem;
 import model.Product;
 import model.User;
 import utils.UserSession;
@@ -11,12 +13,14 @@ import java.util.Scanner;
 public class MainView {
     private ProductController productController;
     private UserController userController;
+    private CartController cartController;
     private UserView userView;
     private Scanner scanner;
 
-    public MainView(ProductController productController, UserController userController, UserView userView) {
+    public MainView(ProductController productController, UserController userController, CartController cartController, UserView userView) {
         this.productController = productController;
         this.userController = userController;
+        this.cartController = cartController;
         this.userView = userView;
         this.scanner = new Scanner(System.in);
     }
@@ -87,10 +91,10 @@ public class MainView {
 
         switch (option) {
             case 1:
-                System.out.println("Adding item to cart... (not implemented yet)");
+                handleAddToCart();
                 break;
             case 2:
-                System.out.println("Viewing cart... (not implemented yet)");
+                handleViewCart();
                 break;
             case 9:
                 UserSession.logout();
@@ -125,5 +129,52 @@ public class MainView {
 
     private void handleCreateAccount(){
         userView.renderRegisterUser();
+    }
+
+    private void handleAddToCart() {
+        System.out.println("\n--- ADD TO CART ---");
+
+        showAvailableProducts();
+
+        try {
+            System.out.print("Enter Product ID to add: ");
+            int productId = Integer.parseInt(scanner.nextLine());
+
+            System.out.print("Enter Quantity: ");
+            int quantity = Integer.parseInt(scanner.nextLine());
+
+            boolean success = cartController.addProductToCart(productId, quantity);
+
+            if (success) {
+                System.out.println("Success! Item added to your cart.");
+            } else {
+                System.out.println("Error: Could not add item. Check if the Product ID is valid.");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input! Please enter only numbers.");
+        }
+    }
+
+    private void handleViewCart() {
+        System.out.println("\n--- YOUR CART ---");
+
+        CartItem[] items = cartController.getLoggedUserCartItems();
+
+        if (items.length == 0) {
+            System.out.println("Your cart is empty.");
+            return;
+        }
+
+        for (CartItem item : items) {
+            double subtotal = item.getQuantity() * item.getUnitPrice();
+            System.out.println("Product: " + item.getProduct().getName() +
+                    " | Qty: " + item.getQuantity() +
+                    " | Unit Price: R$" + item.getUnitPrice() +
+                    " | Subtotal: R$" + subtotal);
+        }
+
+        double total = cartController.getLoggedUserCartTotal();
+        System.out.println("-------------------------");
+        System.out.println("TOTAL: R$" + total);
     }
 }
