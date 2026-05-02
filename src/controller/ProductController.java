@@ -10,6 +10,12 @@ public class ProductController {
 
     public ProductController(ProductDao productDao){
         this.productDao = productDao;
+
+        // Mock Products
+        productDao.saveProduct(new Product(1, "Laptop", 999.99));
+        productDao.saveProduct(new Product(2, "Smartphone", 499.99));
+        productDao.saveProduct(new Product(3, "Headphones", 199.99));
+        productDao.saveProduct(new Product(4, "Smartwatch", 299.99));
     }
 
     public boolean registerProduct(int id, String name, double price) {

@@ -3,6 +3,7 @@ package view;
 import controller.UserController;
 import model.User;
 import utils.CreationIdUtils;
+import utils.InputUtils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -37,25 +38,14 @@ public class UserView {
 
     private int getOption() {
         String menu = """
-                
                 --- USER MENU ---
                 1 - Register User
                 2 - List Users
                 0 - Back
                 """;
-        System.out.print(menu);
+        System.out.println(menu);
 
-        int option = -1;
-        do {
-            System.out.print("Choose an option: ");
-            try {
-                option = Integer.parseInt(scanner.nextLine());
-            } catch (NumberFormatException e) {
-                System.out.println("Error: Invalid input! Please enter a number.");
-            }
-        } while (option < 0 || option > 2);
-
-        return option;
+        return InputUtils.readInt("Choose an option: ", 0, 2);
     }
 
     public void renderRegisterUser() {
