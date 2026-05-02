@@ -61,4 +61,24 @@ public class StockMovementDao {
 
         return true;
     }
+
+    public boolean deleteStockMovement(int id) {
+        int indexToDeleted = -1;
+        for (int i = 0; i < stockMovementCount; i++) {
+            if (this.stockMovementDb[i].getId() == id){
+                indexToDeleted = i;
+                break;
+            }
+        }
+
+        if (indexToDeleted == -1){
+            return false; // Stock not found!
+        }
+
+        stockMovementDb[indexToDeleted] = stockMovementDb[stockMovementCount - 1];
+        stockMovementDb[stockMovementCount - 1] = null;
+        stockMovementCount--;
+
+        return true;
+    }
 }
