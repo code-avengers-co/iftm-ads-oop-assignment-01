@@ -97,4 +97,27 @@ public class CartController {
 
         return total;
     }
+
+    public boolean removeProductFromCart(int productId) {
+        if (!UserSession.isLoggedIn()) {
+            return false;
+        }
+
+        int userId = UserSession.getLoggedUser().getId();
+        Cart cart = cartDao.findOpenCartByUser(userId);
+
+        if (cart == null) {
+            return false;
+        }
+
+        CartItem[] items = cartItemDao.findItemsByCartId(cart.getId());
+
+        for (CartItem item : items) {
+            if (item.getProduct().getId() == productId) {
+                return cartItemDao.deleteCartItem(item.getId());
+            }
+        }
+
+        return false; // Product not found in cart
+    }
 }
