@@ -1,6 +1,7 @@
 package dao;
 
 import model.StockMovement;
+import utils.SystemClock;
 
 import java.time.LocalDateTime;
 
@@ -76,7 +77,7 @@ public class StockMovementDao {
         stockMovement.setQuantity(updatedStockMovement.getQuantity());
         stockMovement.setType(updatedStockMovement.getType());
         stockMovement.setUnitValue(updatedStockMovement.getUnitValue());
-        stockMovement.setUpdatedAt(LocalDateTime.now());
+        stockMovement.setUpdatedAt(SystemClock.now());
 
         return true;
     }

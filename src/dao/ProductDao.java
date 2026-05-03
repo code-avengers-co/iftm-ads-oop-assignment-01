@@ -1,6 +1,7 @@
 package dao;
 
 import model.Product;
+import utils.SystemClock;
 
 import java.time.LocalDateTime;
 
@@ -75,7 +76,7 @@ public class ProductDao {
         product.setPrice(updatedProduct.getPrice());
         product.setActive(updatedProduct.isActive());
         product.setStockQuantity(updatedProduct.getStockQuantity());
-        product.setUpdatedAt(LocalDateTime.now());
+        product.setUpdatedAt(SystemClock.now());
 
         return true;
     }

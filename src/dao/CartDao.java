@@ -1,8 +1,7 @@
 package dao;
 
 import model.Cart;
-
-import java.time.LocalDateTime;
+import utils.SystemClock;
 
 public class CartDao {
     private Cart[] cartDb;
@@ -24,14 +23,11 @@ public class CartDao {
         return true;
     }
 
-    public Cart[] getCarts(){
+    public Cart[] getAllCarts(){
         Cart[] carts = new Cart[cartCount];
-        int currentIndex = 0;
-
         for (int i = 0; i < cartCount; i++) {
             if (cartDb[i] != null){
-                carts[currentIndex]= cartDb[i];
-                currentIndex++;
+                carts[i]= cartDb[i];
             }
         }
 
@@ -69,7 +65,7 @@ public class CartDao {
         }
 
         cart.setStatus(updatedCart.getStatus());
-        cart.setUpdatedAt(LocalDateTime.now());
+        cart.setUpdatedAt(SystemClock.now());
 
         return true;
     }

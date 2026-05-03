@@ -1,6 +1,7 @@
 package dao;
 
 import model.Order;
+import utils.SystemClock;
 
 import java.time.LocalDateTime;
 
@@ -71,7 +72,7 @@ public class OrderDao {
         order.setCoupon(updatedOrder.getCoupon());
         order.setTotalValue(updatedOrder.getTotalValue());
         order.setPaymentMethod(updatedOrder.getPaymentMethod());
-        order.setUpdatedAt(LocalDateTime.now());
+        order.setUpdatedAt(SystemClock.now());
 
         return true;
     }

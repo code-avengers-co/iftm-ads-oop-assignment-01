@@ -23,6 +23,7 @@ public class Main {
         StockController stockController = new StockController(stockMovementDao, productDao);
         OrderController orderController = new OrderController(orderDao);
         ReportController reportController = new ReportController(orderDao);
+        TriggerController triggerController = new TriggerController(cartDao, cartItemDao, orderDao);
         CheckoutController checkoutController = new CheckoutController(
                 cartDao,
                 cartItemDao,
@@ -43,6 +44,7 @@ public class Main {
         ReportView reportView = new ReportView(reportController);
         MainView mainView = new MainView(
                 userController,
+                triggerController,
                 userView,
                 productView,
                 couponView,

@@ -1,6 +1,7 @@
 package dao;
 
 import model.User;
+import utils.SystemClock;
 
 import java.time.LocalDateTime;
 
@@ -57,7 +58,7 @@ public class UserDao {
         user.setPerson(updatedUser.getPerson());
         user.setUsername(updatedUser.getUsername());
         user.setPassword(updatedUser.getPassword());
-        user.setUpdatedAt(LocalDateTime.now());
+        user.setUpdatedAt(SystemClock.now());
         user.setAdmin(updatedUser.isAdmin());
 
         return true;

@@ -2,6 +2,7 @@ package dao;
 
 import model.Coupon;
 import model.Product;
+import utils.SystemClock;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -64,7 +65,7 @@ public class CouponDao {
         Coupon[] tempCoupons = new Coupon[count];
         int validCouponsCount = 0;
 
-        LocalDate today = LocalDate.now();
+        LocalDate today = SystemClock.today();
 
         for (int i = 0; i < count; i++) {
             if (coupons[i].isActive() && !coupons[i].getExpiresAt().isBefore(today)) {

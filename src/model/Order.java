@@ -1,6 +1,7 @@
 package model;
 
 import model.enums.OrderStatus;
+import utils.SystemClock;
 
 import java.time.LocalDateTime;
 
@@ -22,8 +23,8 @@ public class Order {
 
         this.status = OrderStatus.Created;
         this.coupon = null;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.createdAt = SystemClock.now();
+        this.updatedAt = SystemClock.now();
     }
 
     public int getId() {

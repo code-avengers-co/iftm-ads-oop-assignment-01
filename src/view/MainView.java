@@ -3,10 +3,12 @@ package view;
 import controller.*;
 import model.User;
 import utils.InputUtils;
+import utils.SystemClock;
 import utils.UserSession;
 
 public class MainView {
     private UserController userController;
+    private TriggerController triggerController;
     private UserView userView;
     private ProductView productView;
     private CouponView couponView;
@@ -16,9 +18,10 @@ public class MainView {
     private ReportView reportView;
 
     public MainView(
-            UserController userController, UserView userView, ProductView productView,
+            UserController userController, TriggerController triggerController, UserView userView, ProductView productView,
             CouponView couponView, CartView cartView, OrderView orderView, StockView stockView, ReportView reportView) {
         this.userController = userController;
+        this.triggerController = triggerController;
         this.userView = userView;
         this.productView = productView;
         this.couponView = couponView;
@@ -76,11 +79,13 @@ public class MainView {
     private int showAdminMenu() {
         System.out.println("\n=== ADMIN PANEL ===");
         System.out.println("Welcome, Boss " + UserSession.getLoggedUser().getPerson().getName() + "!");
+        System.out.println("System Date: " + utils.SystemClock.today());
         System.out.println("1 - Manage Products");
         System.out.println("2 - Manage Coupons");
         System.out.println("3 - Manual Stock Entry (Entrada de Estoque)");
         System.out.println("4 - Manage Users");
         System.out.println("5 - View Reports");
+        System.out.println("6 - Advance System Time (Calendar)");
         System.out.println("9 - Logout");
         System.out.println("0 - Exit");
 
@@ -101,6 +106,14 @@ public class MainView {
                 break;
             case 5:
                 reportView.showMenu();
+                break;
+            case 6:
+                int days = InputUtils.readInt("How many days do you want to advance? ", 1, 365);
+                utils.SystemClock.advanceDays(days);
+
+                triggerController.runTriggers();
+
+                System.out.println("Background processes executed! Carts checked and Orders updated.");
                 break;
             case 9:
                 UserSession.logout();

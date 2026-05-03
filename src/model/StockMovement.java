@@ -1,6 +1,7 @@
 package model;
 
 import model.enums.MovementType;
+import utils.SystemClock;
 
 import java.time.LocalDateTime;
 
@@ -19,8 +20,8 @@ public class StockMovement {
         this.quantity = quantity;
         this.type = type;
         this.unitValue = unitValue;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.createdAt = SystemClock.now();
+        this.updatedAt = SystemClock.now();
     }
 
     public int getId() {

@@ -5,6 +5,7 @@ import model.Order;
 import model.enums.OrderStatus;
 import model.enums.RevenuePeriod;
 import utils.InputUtils;
+import utils.SystemClock;
 
 import java.time.LocalDate;
 
@@ -89,7 +90,7 @@ public class ReportView {
             periodSelected = RevenuePeriod.YEARLY;
         }
 
-        LocalDate currentDate = java.time.LocalDate.now();
+        LocalDate currentDate = SystemClock.today();
 
         double revenue = reportController.calculateRevenue(periodSelected, currentDate);
         System.out.println("\nTotal Revenue (" + periodSelected + "): R$" + String.format("%.2f", revenue));
