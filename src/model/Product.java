@@ -1,5 +1,7 @@
 package model;
 
+import utils.SystemClock;
+
 import java.time.LocalDateTime;
 
 public class Product {
@@ -16,7 +18,7 @@ public class Product {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = SystemClock.now();
         this.active = true;
     }
 

@@ -1,6 +1,7 @@
 package dao;
 
 import model.Person;
+import utils.SystemClock;
 
 import java.time.LocalDateTime;
 
@@ -57,7 +58,7 @@ public class PersonDao {
         person.setName(updatedPerson.getName());
         person.setBirthDate(updatedPerson.getBirthDate());
         person.setDocument(updatedPerson.getDocument());
-        person.setUpdatedAt(LocalDateTime.now());
+        person.setUpdatedAt(SystemClock.now());
 
         return true;
     }

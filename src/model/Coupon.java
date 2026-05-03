@@ -1,6 +1,7 @@
 package model;
 
 import model.enums.DiscountType;
+import utils.SystemClock;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,8 +26,8 @@ public class Coupon {
         this.expiresAt = expiresAt;
 
         this.active = true;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.createdAt = SystemClock.now();
+        this.updatedAt = SystemClock.now();
     }
 
 

@@ -1,5 +1,7 @@
 package model;
 
+import utils.SystemClock;
+
 import java.time.LocalDateTime;
 
 public class CartItem {
@@ -17,8 +19,8 @@ public class CartItem {
         this.product = product;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.createdAt = SystemClock.now();
+        this.updatedAt = SystemClock.now();
     }
 
     public int getId() {

@@ -1,6 +1,7 @@
 package dao;
 
 import model.Cart;
+import utils.SystemClock;
 
 import java.time.LocalDateTime;
 
@@ -69,7 +70,7 @@ public class CartDao {
         }
 
         cart.setStatus(updatedCart.getStatus());
-        cart.setUpdatedAt(LocalDateTime.now());
+        cart.setUpdatedAt(SystemClock.now());
 
         return true;
     }
