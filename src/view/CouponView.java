@@ -3,6 +3,7 @@ package view;
 import controller.CouponController;
 import model.Coupon;
 import model.Product;
+import model.enums.DiscountType;
 import utils.CreationIdUtils;
 import utils.InputUtils;
 
@@ -42,7 +43,7 @@ public class CouponView {
 
     private int getOption() {
         String menu = """
-                --- PRODUCT MENU ---
+                --- COUPON MENU ---
                 1 - Register Coupon
                 2 - List of all Coupons
                 3 - Delete Coupon
@@ -61,8 +62,12 @@ public class CouponView {
         System.out.println("Coupon Code: ");
         String code = scanner.nextLine();
 
-        System.out.println("Discount Type (Fixed or Variable): ");
-        String discountType = scanner.nextLine();
+        System.out.println("\nSelect Discount Type:");
+        System.out.println("1 - Fixed (R$)");
+        System.out.println("2 - Percentual (%)");
+        int typeOption = InputUtils.readInt("Choose an option: ", 1, 2);
+
+        DiscountType discountType = (typeOption == 1) ? DiscountType.Fixed : DiscountType.Percentual;
 
         System.out.println("Discount Value: ");
         double discountValue = Double.parseDouble(scanner.nextLine());

@@ -10,6 +10,7 @@ public class Product {
     private boolean active;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private int stockQuantity;
 
     public Product(int id, String name, double price){
         this.id = id;
@@ -67,11 +68,19 @@ public class Product {
         this.updatedAt = updatedAt;
     }
 
+    public int getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
+    }
+
     @Override
     public String toString() {
         return "ID: " + this.getId() +
-                ", Name: " + this.getName() +
-                ", Price: " + this.getPrice() +
-                ", Status: " + (this.isActive() ? "Active" : "Inactive");
+                " | Name: " + this.getName() +
+                " | Price: R$" + String.format("%.2f", this.getPrice()) +
+                " | Stock: " + this.getStockQuantity() + " units";
     }
 }

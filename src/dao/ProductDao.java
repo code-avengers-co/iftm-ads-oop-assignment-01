@@ -74,6 +74,7 @@ public class ProductDao {
         product.setDescription(updatedProduct.getDescription());
         product.setPrice(updatedProduct.getPrice());
         product.setActive(updatedProduct.isActive());
+        product.setStockQuantity(updatedProduct.getStockQuantity());
         product.setUpdatedAt(LocalDateTime.now());
 
         return true;
