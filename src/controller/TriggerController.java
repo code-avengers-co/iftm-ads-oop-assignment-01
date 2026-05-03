@@ -34,9 +34,7 @@ public class TriggerController {
 
         for (Cart cart : allCarts) {
             // 1. Cart Open + 24h -> Expired
-            if (cart.getStatus() == CartStatus.Open &&
-                    cart.getCreatedAt().plusHours(24).isBefore(now)) {
-
+            if (cart.getStatus() == CartStatus.Open && !cart.getCreatedAt().plusHours(24).isAfter(now)) {
                 // 2. Change to expired
                 cart.setStatus(CartStatus.Expired);
                 cart.setUpdatedAt(now);
@@ -57,8 +55,8 @@ public class TriggerController {
         for (Order order : allOrders) {
             // 1. + 48h after order creation -> Delivered
             if (order.getStatus() != OrderStatus.Delivered &&
-                    order.getStatus() != OrderStatus.Canceled &&
-                    order.getCreatedAt().plusHours(48).isBefore(now)) {
+                order.getStatus() != OrderStatus.Canceled &&
+                !order.getCreatedAt().plusHours(48).isAfter(now)){
 
                 order.setStatus(OrderStatus.Delivered);
                 order.setUpdatedAt(now);
@@ -68,7 +66,7 @@ public class TriggerController {
 
             // 2. + 24h after order creation -> Shipped (if Paid or Preparation)
             if (order.getStatus() == OrderStatus.Paid || order.getStatus() == OrderStatus.Preparation) {
-                if (order.getCreatedAt().plusHours(24).isBefore(now)) {
+                if (!order.getCreatedAt().plusHours(24).isAfter(now)) {
                     order.setStatus(OrderStatus.Shipped);
                     order.setUpdatedAt(now);
                     orderDao.updateOrder(order);
