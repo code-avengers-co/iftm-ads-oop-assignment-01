@@ -3,8 +3,6 @@ package dao;
 import model.Cart;
 import utils.SystemClock;
 
-import java.time.LocalDateTime;
-
 public class CartDao {
     private Cart[] cartDb;
     private int cartCount;
@@ -25,14 +23,11 @@ public class CartDao {
         return true;
     }
 
-    public Cart[] getCarts(){
+    public Cart[] getAllCarts(){
         Cart[] carts = new Cart[cartCount];
-        int currentIndex = 0;
-
         for (int i = 0; i < cartCount; i++) {
             if (cartDb[i] != null){
-                carts[currentIndex]= cartDb[i];
-                currentIndex++;
+                carts[i]= cartDb[i];
             }
         }
 
