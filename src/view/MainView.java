@@ -174,23 +174,27 @@ public class MainView {
 
         for (CartItem item : items) {
             double subtotal = item.getQuantity() * item.getUnitPrice();
-            System.out.println("Product: " + item.getProduct().getName() +
+            System.out.println("ID: " + item.getProduct().getId() +
+                    " | Product: " + item.getProduct().getName() +
                     " | Qty: " + item.getQuantity() +
-                    " | Unit Price: R$" + item.getUnitPrice() +
-                    " | Subtotal: R$" + subtotal);
+                    " | Unit Price: R$" + String.format("%.2f", item.getUnitPrice()) +
+                    " | Subtotal: R$" + String.format("%.2f", subtotal));
         }
 
         double total = cartController.getLoggedUserCartTotal();
         System.out.println("-------------------------");
-        System.out.println("TOTAL: R$" + total);
+        System.out.println("TOTAL: R$" + String.format("%.2f", total));;
 
-        System.out.println("\n1 - Checkout (Finalizar Compra)");
+        System.out.println("\n1 - Checkout (Finish Order)");
+        System.out.println("2 - Remove Item from Cart");
         System.out.println("0 - Back to Menu");
 
-        int option = InputUtils.readInt("Choose an option: ", 0, 1);
+        int option = InputUtils.readInt("Choose an option: ", 0, 2);
 
         if (option == 1) {
             handleCheckout();
+        } else if (option == 2){
+            handleRemoveFromCart();
         }
     }
 
@@ -207,6 +211,19 @@ public class MainView {
         } else {
             System.out.println("\nError: Could not process checkout.");
             System.out.println("Please check if the items are currently in stock.");
+        }
+    }
+
+    private void handleRemoveFromCart() {
+        System.out.println("\n--- REMOVE ITEM ---");
+        int productId = InputUtils.readInt("Enter the Product ID to remove: ", 1, Integer.MAX_VALUE);
+
+        boolean success = cartController.removeProductFromCart(productId);
+
+        if (success) {
+            System.out.println("Item successfully removed from your cart.");
+        } else {
+            System.out.println("Error: Product not found in your cart.");
         }
     }
 }
