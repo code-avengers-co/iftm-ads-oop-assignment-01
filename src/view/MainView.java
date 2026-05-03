@@ -18,7 +18,6 @@ public class MainView {
     private CartController cartController;
     private CheckoutController checkoutController;
     private UserView userView;
-    private Scanner scanner;
 
     public MainView(
             ProductController productController, UserController userController,
@@ -28,7 +27,6 @@ public class MainView {
         this.cartController = cartController;
         this.checkoutController = checkoutController;
         this.userView = userView;
-        this.scanner = new Scanner(System.in);
     }
 
     public void start() {
@@ -118,11 +116,8 @@ public class MainView {
     }
 
     private void handleLogin() {
-        System.out.print("Username: ");
-        String username = scanner.nextLine();
-
-        System.out.print("Password: ");
-        String password = scanner.nextLine();
+        String username = InputUtils.readString("Username: ");
+        String password = InputUtils.readString("Password: ");
 
         User authenticatedUser = userController.authenticate(username, password);
 
@@ -143,22 +138,23 @@ public class MainView {
 
         showAvailableProducts();
 
-        try {
-            System.out.print("Enter Product ID to add: ");
-            int productId = Integer.parseInt(scanner.nextLine());
+        int productId = InputUtils.readInt("Enter Product ID to add (-1 to cancel): ", -1, Integer.MAX_VALUE);
+        if (productId == -1){
+            System.out.println("Cancelled adding to cart.");
+            return;
+        }
 
-            System.out.print("Enter Quantity: ");
-            int quantity = Integer.parseInt(scanner.nextLine());
+        int quantity = InputUtils.readInt("Enter Quantity (-1 to cancel): ", -1, Integer.MAX_VALUE);
+        if (quantity == -1){
+            System.out.println("Cancelled adding to cart.");
+            return;
+        }
 
-            boolean success = cartController.addProductToCart(productId, quantity);
-
-            if (success) {
-                System.out.println("Success! Item added to your cart.");
-            } else {
-                System.out.println("Error: Could not add item. Check if the Product ID is valid.");
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid input! Please enter only numbers.");
+        boolean success = cartController.addProductToCart(productId, quantity);
+        if (success) {
+            System.out.println("Success! Item added to your cart.");
+        } else {
+            System.out.println("Error: Could not add item. Check if the Product ID is valid.");
         }
     }
 
