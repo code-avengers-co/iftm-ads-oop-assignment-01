@@ -13,10 +13,11 @@ public class MainView {
     private CartView cartView;
     private OrderView orderView;
     private StockView stockView;
+    private ReportView reportView;
 
     public MainView(
             UserController userController, UserView userView, ProductView productView,
-            CouponView couponView, CartView cartView, OrderView orderView, StockView stockView) {
+            CouponView couponView, CartView cartView, OrderView orderView, StockView stockView, ReportView reportView) {
         this.userController = userController;
         this.userView = userView;
         this.productView = productView;
@@ -24,6 +25,7 @@ public class MainView {
         this.cartView = cartView;
         this.orderView = orderView;
         this.stockView = stockView;
+        this.reportView = reportView;
     }
 
     public void start() {
@@ -78,6 +80,7 @@ public class MainView {
         System.out.println("2 - Manage Coupons");
         System.out.println("3 - Manual Stock Entry (Entrada de Estoque)");
         System.out.println("4 - Manage Users");
+        System.out.println("5 - View Reports");
         System.out.println("9 - Logout");
         System.out.println("0 - Exit");
 
@@ -95,6 +98,9 @@ public class MainView {
                 break;
             case 4:
                 userView.showMenu();
+                break;
+            case 5:
+                reportView.showMenu();
                 break;
             case 9:
                 UserSession.logout();

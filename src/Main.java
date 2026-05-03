@@ -22,6 +22,7 @@ public class Main {
         CartController cartController = new CartController(cartDao, cartItemDao, productDao);
         StockController stockController = new StockController(stockMovementDao, productDao);
         OrderController orderController = new OrderController(orderDao);
+        ReportController reportController = new ReportController(orderDao);
         CheckoutController checkoutController = new CheckoutController(
                 cartDao,
                 cartItemDao,
@@ -39,6 +40,7 @@ public class Main {
         CartView cartView = new CartView(cartController, checkoutController, productView);
         OrderView orderView = new OrderView(orderController);
         StockView stockView = new StockView(stockController, productView);
+        ReportView reportView = new ReportView(reportController);
         MainView mainView = new MainView(
                 userController,
                 userView,
@@ -46,7 +48,8 @@ public class Main {
                 couponView,
                 cartView,
                 orderView,
-                stockView
+                stockView,
+                reportView
         );
 
         // 4. Call test
