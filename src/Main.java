@@ -23,6 +23,7 @@ public class Main {
         UserController userController = new UserController(userDao, personDao);
         CouponController couponController = new CouponController(couponDao);
         CartController cartController = new CartController(cartDao, cartItemDao, productDao);
+        StockController stockController = new StockController(stockMovementDao, productDao);
         CheckoutController checkoutController = new CheckoutController(
                 cartDao, cartItemDao, orderDao, orderItemDao,
                 stockMovementDao, productDao, couponDao
@@ -35,7 +36,7 @@ public class Main {
 
         MainView mainView = new MainView(
                 productController, userController,
-                cartController, checkoutController,
+                cartController, checkoutController, stockController,
                 userView, productView, couponView
         );
 
