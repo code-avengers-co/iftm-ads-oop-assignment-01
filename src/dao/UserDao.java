@@ -58,6 +58,7 @@ public class UserDao {
         user.setUsername(updatedUser.getUsername());
         user.setPassword(updatedUser.getPassword());
         user.setUpdatedAt(LocalDateTime.now());
+        user.setAdmin(updatedUser.isAdmin());
 
         return true;
     }
