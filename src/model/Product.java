@@ -10,6 +10,7 @@ public class Product {
     private boolean active;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private int stockQuantity;
 
     public Product(int id, String name, double price){
         this.id = id;
@@ -65,6 +66,14 @@ public class Product {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public int getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 
     @Override
