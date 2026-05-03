@@ -17,13 +17,14 @@ public class Delivery {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Delivery(int id, Order order, String carrier, String trackingCode, LocalDate shippingDate) {
+    public Delivery(int id, Order order) {
         this.id = id;
         this.order = order;
-        this.carrier = carrier;
-        this.trackingCode = trackingCode;
-        this.shippingDate = shippingDate;
         this.status = DeliveryStatus.Preparing;
+        this.carrier = null;
+        this.trackingCode = null;
+        this.shippingDate = null;
+        this.deliveryDate = null;
         this.createdAt = SystemClock.now();
         this.updatedAt = SystemClock.now();
     }
