@@ -1,6 +1,7 @@
 package model;
 
 import javax.swing.text.html.HTMLDocument;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Coupon {
@@ -10,11 +11,11 @@ public class Coupon {
     private double discountValue;
     private double minimumPrice;
     private boolean active;
-    private LocalDateTime expiresAt;
+    private LocalDate expiresAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Coupon(int id, String code, String discounType, double discountValue, double minimumPrice, LocalDateTime expiresAt) {
+    public Coupon(int id, String code, String discounType, double discountValue, double minimumPrice, LocalDate expiresAt) {
         this.id = id;
         this.code = code;
         this.discountType = discounType;
@@ -47,9 +48,9 @@ public class Coupon {
 
     public void setActive(boolean active) { this.active = active; }
 
-    public LocalDateTime getExpiresAt() { return expiresAt; }
+    public LocalDate getExpiresAt() { return expiresAt; }
 
-    public void getExpiresAt(LocalDateTime expiresAt) { this.expiresAt = expiresAt; }
+    public void getExpiresAt(LocalDate expiresAt) { this.expiresAt = expiresAt; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
 
