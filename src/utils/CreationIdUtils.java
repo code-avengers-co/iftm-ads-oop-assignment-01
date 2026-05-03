@@ -10,6 +10,7 @@ public class CreationIdUtils {
     private static int nextOrderItemId = 1;
     private static int nextStockMovementId = 1;
     private static int nextCouponId = 1;
+    private static int nextDeliveryId = 1;
 
     public static int generateProductId(){
         int idToReturn = nextProductId;
@@ -63,4 +64,11 @@ public class CreationIdUtils {
         int idToReturn = nextCouponId;
         nextCouponId++;
         return idToReturn;
-    }}
+    }
+
+    public static int generateDeliveryId() {
+        int idToReturn = nextDeliveryId;
+        nextDeliveryId++;
+        return idToReturn;
+    }
+}
