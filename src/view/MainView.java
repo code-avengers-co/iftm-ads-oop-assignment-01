@@ -18,15 +18,20 @@ public class MainView {
     private CartController cartController;
     private CheckoutController checkoutController;
     private UserView userView;
+    private ProductView productView;
+    private CouponView couponView;
 
     public MainView(
             ProductController productController, UserController userController,
-            CartController cartController, CheckoutController checkoutController, UserView userView) {
+            CartController cartController, CheckoutController checkoutController,
+            UserView userView, ProductView productView, CouponView couponView) {
         this.productController = productController;
         this.userController = userController;
         this.cartController = cartController;
         this.checkoutController = checkoutController;
         this.userView = userView;
+        this.productView = productView;
+        this.couponView = couponView;
     }
 
     public void start() {
@@ -38,11 +43,11 @@ public class MainView {
         // 2. Show the menu based on login status
         int option;
         do {
-            // If not logged in, show options to log in or create account
             if (!UserSession.isLoggedIn()) {
                 option = showGuestMenu();
+            } else if (UserSession.getLoggedUser().isAdmin()){
+                option = showAdminMenu();
             } else {
-                // If logged in, show options to view products, add to cart, etc.
                 option = showLoggedMenu();
             }
         } while (option != 0);
@@ -80,6 +85,46 @@ public class MainView {
                 break;
             default:
                 System.out.println("Invalid option. Try again.");
+        }
+
+        return option;
+    }
+
+    private int showAdminMenu() {
+        System.out.println("\n=== ADMIN PANEL ===");
+        System.out.println("Welcome, Boss " + UserSession.getLoggedUser().getPerson().getName() + "!");
+        System.out.println("1 - Manage Products");
+        System.out.println("2 - Manage Coupons");
+        System.out.println("3 - Manual Stock Entry (Entrada de Estoque)");
+        System.out.println("4 - Manage Users");
+        System.out.println("9 - Logout");
+        System.out.println("0 - Exit");
+
+        int option = InputUtils.readInt("Choose an option: ", 0, 9);
+
+        switch (option) {
+            case 1:
+                productView.showMenu();
+                break;
+            case 2:
+                couponView.showMenu();
+                break;
+            case 3:
+                // handleManualStockEntry();
+                System.out.println("Manual Stock Entry feature is not implemented yet.");
+                break;
+            case 4:
+                userView.showMenu();
+                break;
+            case 9:
+                UserSession.logout();
+                System.out.println("Admin logged out successfully.");
+                break;
+            case 0:
+                System.out.println("Exiting... Goodbye Boss!");
+                break;
+            default:
+                System.out.println("Invalid Option");
         }
 
         return option;
