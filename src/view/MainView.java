@@ -16,10 +16,19 @@ public class MainView {
     private OrderView orderView;
     private StockView stockView;
     private ReportView reportView;
+    private DeliveryView deliveryView;
 
     public MainView(
-            UserController userController, TriggerController triggerController, UserView userView, ProductView productView,
-            CouponView couponView, CartView cartView, OrderView orderView, StockView stockView, ReportView reportView) {
+            UserController userController,
+            TriggerController triggerController,
+            UserView userView,
+            ProductView productView,
+            CouponView couponView,
+            CartView cartView,
+            OrderView orderView,
+            StockView stockView,
+            ReportView reportView,
+            DeliveryView deliveryView) {
         this.userController = userController;
         this.triggerController = triggerController;
         this.userView = userView;
@@ -29,6 +38,7 @@ public class MainView {
         this.orderView = orderView;
         this.stockView = stockView;
         this.reportView = reportView;
+        this.deliveryView = deliveryView;
     }
 
     public void start() {
@@ -86,6 +96,7 @@ public class MainView {
         System.out.println("4 - Manage Users");
         System.out.println("5 - View Reports");
         System.out.println("6 - Advance System Time (Calendar)");
+        System.out.println("7 - Manage Deliveries");
         System.out.println("9 - Logout");
         System.out.println("0 - Exit");
 
@@ -114,6 +125,9 @@ public class MainView {
                 triggerController.runTriggers();
 
                 System.out.println("Background processes executed! Carts checked and Orders updated.");
+                break;
+            case 7:
+                deliveryView.showMenu();
                 break;
             case 9:
                 UserSession.logout();
