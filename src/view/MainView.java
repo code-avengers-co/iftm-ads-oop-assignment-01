@@ -186,11 +186,13 @@ public class MainView {
         System.out.println("0 - Back to Menu");
 
         int option = InputUtils.readInt("Choose an option: ", 0, 2);
-
-        if (option == 1) {
-            handleCheckout();
-        } else if (option == 2){
-            handleRemoveFromCart();
+        switch (option){
+            case 1:
+                handleCheckout();
+                break;
+            case 2:
+                handleRemoveFromCart();
+                break;
         }
     }
 
@@ -199,7 +201,14 @@ public class MainView {
 
         String paymentMethod = InputUtils.readString("Enter Payment Method (e.g., PIX, Credit Card): ");
 
-        boolean success = checkoutController.processCheckout(paymentMethod);
+        String hasCoupon = InputUtils.readString("Do you have a discount coupon? (Y/N)");
+        String couponCode = null;
+
+        if (hasCoupon.equalsIgnoreCase("Y")) {
+            couponCode = InputUtils.readString("Enter Coupon Code: ");
+        }
+
+        boolean success = checkoutController.processCheckout(paymentMethod, couponCode);
 
         if (success) {
             System.out.println("\nSuccess! Your order has been placed.");
