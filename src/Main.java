@@ -14,6 +14,7 @@ public class Main {
         OrderItemDao orderItemDao = new OrderItemDao(100);
         StockMovementDao stockMovementDao = new StockMovementDao(100);
         CouponDao couponDao = new CouponDao(100);
+        DeliveryDao deliveryDao = new DeliveryDao(100);
 
         // 2. Create Controllers
         ProductController productController = new ProductController(productDao);
@@ -23,7 +24,7 @@ public class Main {
         StockController stockController = new StockController(stockMovementDao, productDao);
         OrderController orderController = new OrderController(orderDao);
         ReportController reportController = new ReportController(orderDao);
-        DeliveryDao deliveryDao = new DeliveryDao(100);
+        DeliveryController deliveryController = new DeliveryController(deliveryDao);
         TriggerController triggerController = new TriggerController(cartDao, cartItemDao, orderDao, deliveryDao);
         CheckoutController checkoutController = new CheckoutController(
                 cartDao,
@@ -44,6 +45,7 @@ public class Main {
         OrderView orderView = new OrderView(orderController);
         StockView stockView = new StockView(stockController, productView);
         ReportView reportView = new ReportView(reportController);
+        DeliveryView deliveryView = new DeliveryView(deliveryController);
         MainView mainView = new MainView(
                 userController,
                 triggerController,
@@ -53,10 +55,11 @@ public class Main {
                 cartView,
                 orderView,
                 stockView,
-                reportView
+                reportView,
+                deliveryView
         );
 
-        // 4. Call test
+        // 4. Start the application
         mainView.start();
     }
 }
