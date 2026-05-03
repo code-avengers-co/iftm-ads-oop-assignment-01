@@ -48,6 +48,25 @@ public class OrderDao {
         return null; // Order not found
     }
 
+    public Order[] findOrdersByUserId(int userId) {
+        Order[] tempOrders = new Order[orderCount];
+        int count = 0;
+
+        for (int i = 0; i < orderCount; i++) {
+            if (orderDb[i].getUser().getId() == userId) {
+                tempOrders[count] = orderDb[i];
+                count++;
+            }
+        }
+
+        Order[] exactOrders = new Order[count];
+        for (int i = 0; i < count; i++) {
+            exactOrders[i] = tempOrders[i];
+        }
+
+        return exactOrders;
+    }
+
     public boolean updateOrder(Order updatedOrder){
         Order order = findById(updatedOrder.getId());
         if (order == null) {
