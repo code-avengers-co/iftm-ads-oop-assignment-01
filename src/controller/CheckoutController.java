@@ -4,6 +4,7 @@ import dao.*;
 import model.*;
 import model.enums.DiscountType;
 import utils.CreationIdUtils;
+import utils.SystemClock;
 import utils.UserSession;
 
 public class CheckoutController {
@@ -114,7 +115,7 @@ public class CheckoutController {
         Coupon coupon = couponDao.findByCode(couponCode);
 
         // 1. Check if coupon exists, is active and not expired
-        if (coupon == null || !coupon.isActive() || coupon.getExpiresAt().isBefore(java.time.LocalDate.now())) {
+        if (coupon == null || !coupon.isActive() || coupon.getExpiresAt().isBefore(SystemClock.today())) {
             return subtotal;
         }
 
