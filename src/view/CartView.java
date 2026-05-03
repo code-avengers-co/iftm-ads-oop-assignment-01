@@ -9,12 +9,12 @@ import utils.InputUtils;
 public class CartView {
     private CartController cartController;
     private CheckoutController checkoutController;
-    private ProductController productController;
+    private ProductView productView;
 
-    public CartView(CartController cartController, CheckoutController checkoutController, ProductController productController) {
+    public CartView(CartController cartController, CheckoutController checkoutController, ProductView productView) {
         this.cartController = cartController;
         this.checkoutController = checkoutController;
-        this.productController = productController;
+        this.productView = productView;
     }
 
     public void showMenu() {
@@ -43,7 +43,7 @@ public class CartView {
     private void handleAddToCart() {
         System.out.println("\n--- ADD TO CART ---");
 
-        productController.showAvailableProducts();
+        productView.showAvailableProducts();
 
         int productId = InputUtils.readInt("Enter Product ID to add (-1 to cancel): ", -1, Integer.MAX_VALUE);
         if (productId == -1){

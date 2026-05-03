@@ -40,6 +40,17 @@ public class ProductView {
         } while (option != 0);
     }
 
+    public void showAvailableProducts() {
+        System.out.println("------------------ PRODUCTS ON SALE ---------------------------");
+
+        Product[] products = productController.getActiveProducts();
+        for (Product p : products) {
+            System.out.println(p);
+        }
+
+        System.out.println("---------------------------------------------------------------");
+    }
+
     private int getOption() {
         String menu = """
                 --- PRODUCT MENU ---

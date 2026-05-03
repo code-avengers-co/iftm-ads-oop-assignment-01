@@ -36,15 +36,11 @@ public class Main {
         ProductView productView = new ProductView(productController);
         CouponView couponView = new CouponView(couponController);
         UserView userView = new UserView(userController);
-        CartView cartView = new CartView(cartController, checkoutController, productController);
+        CartView cartView = new CartView(cartController, checkoutController, productView);
         OrderView orderView = new OrderView(orderController);
-        StockView stockView = new StockView(stockController, productController);
+        StockView stockView = new StockView(stockController, productView);
         MainView mainView = new MainView(
-                productController,
                 userController,
-                cartController,
-                checkoutController,
-                stockController,
                 userView,
                 productView,
                 couponView,

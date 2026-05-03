@@ -7,17 +7,17 @@ import utils.InputUtils;
 
 public class StockView {
     private StockController stockController;
-    private ProductController productController;
+    private ProductView productView;
 
-    public StockView(StockController stockController, ProductController productController) {
+    public StockView(StockController stockController, ProductView productView) {
         this.stockController = stockController;
-        this.productController = productController;
+        this.productView = productView;
     }
 
     public void handleManualStockEntry() {
         System.out.println("\n--- MANUAL STOCK ENTRY ---");
 
-        productController.showAvailableProducts();
+        productView.showAvailableProducts();
 
         int productId = InputUtils.readInt("Enter Product ID (-1 to cancel): ", -1, Integer.MAX_VALUE);
         if (productId == -1){

@@ -1,22 +1,12 @@
 package view;
 
 import controller.*;
-import model.CartItem;
-import model.Order;
-import model.Product;
 import model.User;
-import model.enums.MovementType;
 import utils.InputUtils;
 import utils.UserSession;
 
-import java.util.Scanner;
-
 public class MainView {
-    private ProductController productController;
     private UserController userController;
-    private CartController cartController;
-    private CheckoutController checkoutController;
-    private StockController stockController;
     private UserView userView;
     private ProductView productView;
     private CouponView couponView;
@@ -25,14 +15,9 @@ public class MainView {
     private StockView stockView;
 
     public MainView(
-            ProductController productController, UserController userController,
-            CartController cartController, CheckoutController checkoutController, StockController stockController,
-            UserView userView, ProductView productView, CouponView couponView, CartView cartView, OrderView orderView, StockView stockView) {
-        this.productController = productController;
+            UserController userController, UserView userView, ProductView productView,
+            CouponView couponView, CartView cartView, OrderView orderView, StockView stockView) {
         this.userController = userController;
-        this.cartController = cartController;
-        this.checkoutController = checkoutController;
-        this.stockController = stockController;
         this.userView = userView;
         this.productView = productView;
         this.couponView = couponView;
@@ -45,7 +30,7 @@ public class MainView {
         System.out.println("=== WELCOME TO THE STORE ===");
 
         // 1. Show the Products
-        productController.showAvailableProducts();
+        productView.showAvailableProducts();
 
         // 2. Show the menu based on login status
         int option;
