@@ -3,6 +3,7 @@ package view;
 import controller.*;
 import model.User;
 import utils.InputUtils;
+import utils.SystemClock;
 import utils.UserSession;
 
 public class MainView {
@@ -76,11 +77,13 @@ public class MainView {
     private int showAdminMenu() {
         System.out.println("\n=== ADMIN PANEL ===");
         System.out.println("Welcome, Boss " + UserSession.getLoggedUser().getPerson().getName() + "!");
+        System.out.println("System Date: " + utils.SystemClock.today());
         System.out.println("1 - Manage Products");
         System.out.println("2 - Manage Coupons");
         System.out.println("3 - Manual Stock Entry (Entrada de Estoque)");
         System.out.println("4 - Manage Users");
         System.out.println("5 - View Reports");
+        System.out.println("6 - Advance System Time (Calendar)");
         System.out.println("9 - Logout");
         System.out.println("0 - Exit");
 
@@ -101,6 +104,10 @@ public class MainView {
                 break;
             case 5:
                 reportView.showMenu();
+                break;
+            case 6:
+                int days = InputUtils.readInt("How many days do you want to advance? ", 1, 365);
+                utils.SystemClock.advanceDays(days);
                 break;
             case 9:
                 UserSession.logout();
