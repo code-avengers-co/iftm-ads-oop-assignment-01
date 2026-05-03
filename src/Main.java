@@ -18,14 +18,15 @@ public class Main {
         OrderDao orderDao = new OrderDao(100);
         OrderItemDao orderItemDao = new OrderItemDao(100);
         StockMovementDao stockMovementDao = new StockMovementDao(100);
+        CouponDao couponDao = new CouponDao(100);
 
         // 2. Create Controllers
         ProductController productController = new ProductController(productDao);
         UserController userController = new UserController(userDao, personDao);
         CartController cartController = new CartController(cartDao, cartItemDao, productDao);
         CheckoutController checkoutController = new CheckoutController(
-                cartDao, cartItemDao,
-                orderDao, orderItemDao, stockMovementDao, productDao
+                cartDao, cartItemDao, orderDao, orderItemDao,
+                stockMovementDao, productDao, couponDao
         );
 
         // 3. Create Views
