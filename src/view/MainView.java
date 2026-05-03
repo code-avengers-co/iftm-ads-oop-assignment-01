@@ -8,6 +8,7 @@ import utils.UserSession;
 
 public class MainView {
     private UserController userController;
+    private TriggerController triggerController;
     private UserView userView;
     private ProductView productView;
     private CouponView couponView;
@@ -17,9 +18,10 @@ public class MainView {
     private ReportView reportView;
 
     public MainView(
-            UserController userController, UserView userView, ProductView productView,
+            UserController userController, TriggerController triggerController, UserView userView, ProductView productView,
             CouponView couponView, CartView cartView, OrderView orderView, StockView stockView, ReportView reportView) {
         this.userController = userController;
+        this.triggerController = triggerController;
         this.userView = userView;
         this.productView = productView;
         this.couponView = couponView;
@@ -108,6 +110,10 @@ public class MainView {
             case 6:
                 int days = InputUtils.readInt("How many days do you want to advance? ", 1, 365);
                 utils.SystemClock.advanceDays(days);
+
+                triggerController.runTriggers();
+
+                System.out.println("Background processes executed! Carts checked and Orders updated.");
                 break;
             case 9:
                 UserSession.logout();
