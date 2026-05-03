@@ -21,4 +21,24 @@ public class DeliveryDao {
 
         return true;
     }
+
+    public Delivery[] getAllDeliveries() {
+        Delivery[] deliveries = new Delivery[deliveryCount];
+        for (int i = 0; i < deliveryCount; i++) {
+            if (deliveryDb[i] != null) {
+                deliveries[i] = deliveryDb[i];
+            }
+        }
+
+        return deliveries;
+    }
+
+    public Delivery findById(int id){
+        for (int i = 0; i < deliveryCount; i++) {
+            if (deliveryDb[i].getId() == id) {
+                return deliveryDb[i];
+            }
+        }
+        return null; // Delivery not found
+    }
 }
