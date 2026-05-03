@@ -1,9 +1,6 @@
 package controller;
 
-import dao.CartDao;
-import dao.CartItemDao;
-import dao.OrderDao;
-import dao.OrderItemDao;
+import dao.*;
 import model.*;
 import utils.CreationIdUtils;
 import utils.UserSession;
@@ -13,12 +10,22 @@ public class CheckoutController {
     private CartItemDao cartItemDao;
     private OrderDao orderDao;
     private OrderItemDao orderItemDao;
+    private StockMovementDao stockMovementDao;
+    private ProductDao productDao;
 
-    public CheckoutController(CartDao cartDao, CartItemDao cartItemDao, OrderDao orderDao, OrderItemDao orderItemDao) {
+    public CheckoutController(
+            CartDao cartDao,
+            CartItemDao cartItemDao,
+            OrderDao orderDao,
+            OrderItemDao orderItemDao,
+            StockMovementDao stockMovementDao,
+            ProductDao productDao) {
         this.cartDao = cartDao;
         this.cartItemDao = cartItemDao;
         this.orderDao = orderDao;
         this.orderItemDao = orderItemDao;
+        this.stockMovementDao = stockMovementDao;
+        this.productDao = productDao;
     }
 
     public boolean processCheckout(String paymentMethod) {
