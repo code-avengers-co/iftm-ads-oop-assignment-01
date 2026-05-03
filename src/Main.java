@@ -23,7 +23,8 @@ public class Main {
         StockController stockController = new StockController(stockMovementDao, productDao);
         OrderController orderController = new OrderController(orderDao);
         ReportController reportController = new ReportController(orderDao);
-        TriggerController triggerController = new TriggerController(cartDao, cartItemDao, orderDao);
+        DeliveryDao deliveryDao = new DeliveryDao(100);
+        TriggerController triggerController = new TriggerController(cartDao, cartItemDao, orderDao, deliveryDao);
         CheckoutController checkoutController = new CheckoutController(
                 cartDao,
                 cartItemDao,
@@ -31,7 +32,8 @@ public class Main {
                 orderItemDao,
                 stockMovementDao,
                 productDao,
-                couponDao
+                couponDao,
+                deliveryDao
         );
 
         // 3. Create Views
