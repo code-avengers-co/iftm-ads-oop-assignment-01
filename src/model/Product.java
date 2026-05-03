@@ -79,8 +79,8 @@ public class Product {
     @Override
     public String toString() {
         return "ID: " + this.getId() +
-                ", Name: " + this.getName() +
-                ", Price: " + this.getPrice() +
-                ", Status: " + (this.isActive() ? "Active" : "Inactive");
+                " | Name: " + this.getName() +
+                " | Price: R$" + String.format("%.2f", this.getPrice()) +
+                " | Stock: " + this.getStockQuantity() + " units";
     }
 }
