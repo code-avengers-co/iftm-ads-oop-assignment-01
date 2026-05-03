@@ -41,4 +41,15 @@ public class ProductController {
     public boolean deleteProduct(int id){
         return productDao.deleteProduct(id);
     }
+
+    public void showAvailableProducts() {
+        System.out.println("------------------ PRODUCTS ON SALE ---------------------------");
+
+        Product[] products = getActiveProducts();
+        for (Product p : products) {
+            System.out.println(p);
+        }
+
+        System.out.println("---------------------------------------------------------------");
+    }
 }
