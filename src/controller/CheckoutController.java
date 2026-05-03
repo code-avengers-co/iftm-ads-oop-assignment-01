@@ -2,6 +2,7 @@ package controller;
 
 import dao.*;
 import model.*;
+import model.enums.DiscountType;
 import utils.CreationIdUtils;
 import utils.UserSession;
 
@@ -12,23 +13,22 @@ public class CheckoutController {
     private OrderItemDao orderItemDao;
     private StockMovementDao stockMovementDao;
     private ProductDao productDao;
+    private CouponDao couponDao;
 
     public CheckoutController(
-            CartDao cartDao,
-            CartItemDao cartItemDao,
-            OrderDao orderDao,
-            OrderItemDao orderItemDao,
-            StockMovementDao stockMovementDao,
-            ProductDao productDao) {
+            CartDao cartDao, CartItemDao cartItemDao, OrderDao orderDao,
+            OrderItemDao orderItemDao, StockMovementDao stockMovementDao,
+            ProductDao productDao, CouponDao couponDao) {
         this.cartDao = cartDao;
         this.cartItemDao = cartItemDao;
         this.orderDao = orderDao;
         this.orderItemDao = orderItemDao;
         this.stockMovementDao = stockMovementDao;
         this.productDao = productDao;
+        this.couponDao = couponDao;
     }
 
-    public boolean processCheckout(String paymentMethod) {
+    public boolean processCheckout(String paymentMethod, String couponCode) {
         // 1. Check user session
         if (!UserSession.isLoggedIn()) {
             return false;
@@ -58,6 +58,9 @@ public class CheckoutController {
         for (CartItem item : cartItems) {
             totalValue += item.getQuantity() * item.getUnitPrice();
         }
+
+        // Apply discount if coupon code is valid
+        totalValue = calculateTotalWithDiscount(totalValue, couponCode);
 
         // 4. Create the order
         Order newOrder = new Order(CreationIdUtils.generateOrderId(), user, totalValue, paymentMethod);
@@ -101,5 +104,34 @@ public class CheckoutController {
         cartDao.updateCart(cart);
 
         return true;
+    }
+
+    private double calculateTotalWithDiscount(double subtotal, String couponCode) {
+        if (couponCode == null || couponCode.trim().isEmpty()) {
+            return subtotal; // No discount
+        }
+
+        Coupon coupon = couponDao.findByCode(couponCode);
+
+        // 1. Check if coupon exists, is active and not expired
+        if (coupon == null || !coupon.isActive() || coupon.getExpiresAt().isBefore(java.time.LocalDate.now())) {
+            return subtotal;
+        }
+
+        // 2. Check the minimumPrice of the coupon
+        if (coupon.getMinimumPrice() > subtotal) {
+            return subtotal;
+        }
+
+        // 3 Apply discount
+        double finalTotal;
+        if (coupon.getType() == model.enums.DiscountType.Fixed){
+            finalTotal = subtotal - coupon.getDiscountValue();
+        } else {
+            finalTotal = subtotal - (subtotal * (coupon.getDiscountValue() / 100.0));
+        }
+
+        // 4. Ensure total doesn't go below zero
+        return Math.max(0, finalTotal);
     }
 }
