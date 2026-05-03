@@ -1,6 +1,7 @@
 package view;
 
 import controller.CartController;
+import controller.CheckoutController;
 import controller.ProductController;
 import controller.UserController;
 import model.CartItem;
@@ -15,13 +16,17 @@ public class MainView {
     private ProductController productController;
     private UserController userController;
     private CartController cartController;
+    private CheckoutController checkoutController;
     private UserView userView;
     private Scanner scanner;
 
-    public MainView(ProductController productController, UserController userController, CartController cartController, UserView userView) {
+    public MainView(
+            ProductController productController, UserController userController,
+            CartController cartController, CheckoutController checkoutController, UserView userView) {
         this.productController = productController;
         this.userController = userController;
         this.cartController = cartController;
+        this.checkoutController = checkoutController;
         this.userView = userView;
         this.scanner = new Scanner(System.in);
     }
@@ -178,5 +183,30 @@ public class MainView {
         double total = cartController.getLoggedUserCartTotal();
         System.out.println("-------------------------");
         System.out.println("TOTAL: R$" + total);
+
+        System.out.println("\n1 - Checkout (Finalizar Compra)");
+        System.out.println("0 - Back to Menu");
+
+        int option = InputUtils.readInt("Choose an option: ", 0, 1);
+
+        if (option == 1) {
+            handleCheckout();
+        }
+    }
+
+    private void handleCheckout() {
+        System.out.println("\n--- CHECKOUT ---");
+
+        String paymentMethod = InputUtils.readString("Enter Payment Method (e.g., PIX, Credit Card): ");
+
+        boolean success = checkoutController.processCheckout(paymentMethod);
+
+        if (success) {
+            System.out.println("\nSuccess! Your order has been placed.");
+            System.out.println("The stock was updated and your cart is now empty.");
+        } else {
+            System.out.println("\nError: Could not process checkout.");
+            System.out.println("Please check if the items are currently in stock.");
+        }
     }
 }
