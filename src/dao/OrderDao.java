@@ -24,18 +24,12 @@ public class OrderDao {
         return true;
     }
 
-    public Order[] getOrders(){
-        Order[] orders = new Order[orderCount];
-        int currentIndex = 0;
-
+    public Order[] getAllOrders() {
+        Order[] exactOrders = new Order[orderCount];
         for (int i = 0; i < orderCount; i++) {
-            if (orderDb[i] != null){
-                orders[currentIndex]= orderDb[i];
-                currentIndex++;
-            }
+            exactOrders[i] = orderDb[i];
         }
-
-        return orders;
+        return exactOrders;
     }
     
     public Order findById(int id){
