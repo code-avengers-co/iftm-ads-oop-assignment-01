@@ -1,12 +1,10 @@
 package view;
 
-import controller.CartController;
-import controller.CheckoutController;
-import controller.ProductController;
-import controller.UserController;
+import controller.*;
 import model.CartItem;
 import model.Product;
 import model.User;
+import model.enums.MovementType;
 import utils.InputUtils;
 import utils.UserSession;
 
@@ -17,16 +15,23 @@ public class MainView {
     private UserController userController;
     private CartController cartController;
     private CheckoutController checkoutController;
+    private StockController stockController;
     private UserView userView;
+    private ProductView productView;
+    private CouponView couponView;
 
     public MainView(
             ProductController productController, UserController userController,
-            CartController cartController, CheckoutController checkoutController, UserView userView) {
+            CartController cartController, CheckoutController checkoutController, StockController stockController,
+            UserView userView, ProductView productView, CouponView couponView) {
         this.productController = productController;
         this.userController = userController;
         this.cartController = cartController;
         this.checkoutController = checkoutController;
+        this.stockController = stockController;
         this.userView = userView;
+        this.productView = productView;
+        this.couponView = couponView;
     }
 
     public void start() {
@@ -38,11 +43,11 @@ public class MainView {
         // 2. Show the menu based on login status
         int option;
         do {
-            // If not logged in, show options to log in or create account
             if (!UserSession.isLoggedIn()) {
                 option = showGuestMenu();
+            } else if (UserSession.getLoggedUser().isAdmin()){
+                option = showAdminMenu();
             } else {
-                // If logged in, show options to view products, add to cart, etc.
                 option = showLoggedMenu();
             }
         } while (option != 0);
@@ -80,6 +85,46 @@ public class MainView {
                 break;
             default:
                 System.out.println("Invalid option. Try again.");
+        }
+
+        return option;
+    }
+
+    private int showAdminMenu() {
+        System.out.println("\n=== ADMIN PANEL ===");
+        System.out.println("Welcome, Boss " + UserSession.getLoggedUser().getPerson().getName() + "!");
+        System.out.println("1 - Manage Products");
+        System.out.println("2 - Manage Coupons");
+        System.out.println("3 - Manual Stock Entry (Entrada de Estoque)");
+        System.out.println("4 - Manage Users");
+        System.out.println("9 - Logout");
+        System.out.println("0 - Exit");
+
+        int option = InputUtils.readInt("Choose an option: ", 0, 9);
+
+        switch (option) {
+            case 1:
+                productView.showMenu();
+                break;
+            case 2:
+                couponView.showMenu();
+                break;
+            case 3:
+                handleManualStockEntry();
+                System.out.println("Manual Stock Entry feature is not implemented yet.");
+                break;
+            case 4:
+                userView.showMenu();
+                break;
+            case 9:
+                UserSession.logout();
+                System.out.println("Admin logged out successfully.");
+                break;
+            case 0:
+                System.out.println("Exiting... Goodbye Boss!");
+                break;
+            default:
+                System.out.println("Invalid Option");
         }
 
         return option;
@@ -229,6 +274,49 @@ public class MainView {
             System.out.println("Item successfully removed from your cart.");
         } else {
             System.out.println("Error: Product not found in your cart.");
+        }
+    }
+
+    private void handleManualStockEntry() {
+        System.out.println("\n--- MANUAL STOCK ENTRY ---");
+
+        showAvailableProducts();
+
+        int productId = InputUtils.readInt("Enter Product ID (-1 to cancel): ", -1, Integer.MAX_VALUE);
+        if (productId == -1){
+            return;
+        }
+
+        int quantity = InputUtils.readInt("Enter Quantity: ", 1, Integer.MAX_VALUE);
+
+        System.out.println("Select Movement Type:");
+        System.out.println("1 - IN (Entrada)");
+        System.out.println("2 - OUT (Saída/Baixa)");
+        System.out.println("3 - ADJUST (Ajuste Absoluto)");
+        int typeOption = InputUtils.readInt("Choose an option: ", 1, 3);
+
+        MovementType type;
+        switch (typeOption){
+            case 1:
+                type = MovementType.IN;
+                break;
+            case 2:
+                type = MovementType.OUT;
+                break;
+            default:
+                type = MovementType.ADJUST;
+                break;
+        }
+
+        // For simplicity, we will ask for a unit value for all movement types, even though it may not be relevant for OUT movements in a real system.
+        double unitValue = InputUtils.readInt("Enter the Unit Value (Cost/Adjustment): ", 0, Integer.MAX_VALUE);
+
+        boolean success = stockController.registerStockMovement(productId, quantity, type, unitValue);
+
+        if (success) {
+            System.out.println("Stock updated successfully!");
+        } else {
+            System.out.println("Error: Could not update stock. Check if Product ID is valid.");
         }
     }
 }

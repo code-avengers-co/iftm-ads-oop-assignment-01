@@ -15,10 +15,12 @@ public class UserController {
         this.userDao = userDao;
         this.personDao = personDao;
 
-        registerUser(
-                1, "Lucas", LocalDate.of(1990, 1, 1), "123456789",
-                1, "devluquinha", "123"
-        );
+        Person person = new Person(1, "Lucas Admin", LocalDate.of(1990, 1, 1), "123456789");
+        personDao.savePerson(person);
+
+        User admin = new User(1, person, "admin", "123");
+        admin.setAdmin(true);
+        userDao.saveUser(admin);
     }
 
     public boolean registerUser(
