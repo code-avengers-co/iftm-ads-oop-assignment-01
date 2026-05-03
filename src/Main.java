@@ -1,9 +1,6 @@
 import controller.*;
 import dao.*;
-import view.CouponView;
-import view.MainView;
-import view.ProductView;
-import view.UserView;
+import view.*;
 
 public class Main {
     static void main(String[] args) {
@@ -24,20 +21,35 @@ public class Main {
         CouponController couponController = new CouponController(couponDao);
         CartController cartController = new CartController(cartDao, cartItemDao, productDao);
         StockController stockController = new StockController(stockMovementDao, productDao);
+        OrderController orderController = new OrderController(orderDao);
+        ReportController reportController = new ReportController(orderDao);
         CheckoutController checkoutController = new CheckoutController(
-                cartDao, cartItemDao, orderDao, orderItemDao,
-                stockMovementDao, productDao, couponDao
+                cartDao,
+                cartItemDao,
+                orderDao,
+                orderItemDao,
+                stockMovementDao,
+                productDao,
+                couponDao
         );
 
         // 3. Create Views
         ProductView productView = new ProductView(productController);
         CouponView couponView = new CouponView(couponController);
         UserView userView = new UserView(userController);
-
+        CartView cartView = new CartView(cartController, checkoutController, productView);
+        OrderView orderView = new OrderView(orderController);
+        StockView stockView = new StockView(stockController, productView);
+        ReportView reportView = new ReportView(reportController);
         MainView mainView = new MainView(
-                productController, userController,
-                cartController, checkoutController, stockController,
-                userView, productView, couponView
+                userController,
+                userView,
+                productView,
+                couponView,
+                cartView,
+                orderView,
+                stockView,
+                reportView
         );
 
         // 4. Call test
