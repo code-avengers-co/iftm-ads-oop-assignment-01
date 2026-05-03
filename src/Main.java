@@ -1,8 +1,6 @@
-import controller.CartController;
-import controller.CheckoutController;
-import controller.ProductController;
-import controller.UserController;
+import controller.*;
 import dao.*;
+import view.CouponView;
 import view.MainView;
 import view.ProductView;
 import view.UserView;
@@ -23,6 +21,7 @@ public class Main {
         // 2. Create Controllers
         ProductController productController = new ProductController(productDao);
         UserController userController = new UserController(userDao, personDao);
+        CouponController couponController = new CouponController(couponDao);
         CartController cartController = new CartController(cartDao, cartItemDao, productDao);
         CheckoutController checkoutController = new CheckoutController(
                 cartDao, cartItemDao, orderDao, orderItemDao,
@@ -31,8 +30,14 @@ public class Main {
 
         // 3. Create Views
         ProductView productView = new ProductView(productController);
+        CouponView couponView = new CouponView(couponController);
         UserView userView = new UserView(userController);
-        MainView mainView = new MainView(productController, userController, cartController, checkoutController, userView);
+
+        MainView mainView = new MainView(
+                productController, userController,
+                cartController, checkoutController,
+                userView, productView, couponView
+        );
 
         // 4. Call test
         mainView.start();
