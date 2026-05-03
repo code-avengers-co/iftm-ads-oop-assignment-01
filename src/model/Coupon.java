@@ -1,13 +1,14 @@
 package model;
 
-import javax.swing.text.html.HTMLDocument;
+import model.enums.DiscountType;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Coupon {
     private int id;
     private String code;
-    private String discountType;
+    private DiscountType type;
     private double discountValue;
     private double minimumPrice;
     private boolean active;
@@ -15,46 +16,90 @@ public class Coupon {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Coupon(int id, String code, String discounType, double discountValue, double minimumPrice, LocalDate expiresAt) {
+    public Coupon(int id, String code, DiscountType discounType, double discountValue, double minimumPrice, LocalDate expiresAt) {
         this.id = id;
         this.code = code;
-        this.discountType = discounType;
+        this.type = discounType;
         this.discountValue = discountValue;
         this.minimumPrice = minimumPrice;
         this.expiresAt = expiresAt;
+
         this.active = true;
         this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
-    public int getId() { return id; }
 
-    public String getCode() { return code; }
+    public int getId() {
+        return id;
+    }
 
-    public void setCode(String code) { this.code = code; }
+    public String getCode() {
+        return code;
+    }
 
-    public String getDiscountType() { return discountType; }
+    public void setCode(String code) {
+        this.code = code;
+    }
 
-    public void setDiscountType(String discountType) { this.discountType = discountType; }
+    public DiscountType getType() {
+        return type;
+    }
 
-    public double getDiscountValue() { return discountValue; }
+    public void setType(DiscountType type) {
+        this.type = type;
+    }
 
-    public void setDiscountValue(double discountValue) { this.discountValue = discountValue; }
+    public double getDiscountValue() {
+        return discountValue;
+    }
 
-    public double getMinimumPrice() { return minimumPrice; }
+    public void setDiscountValue(double discountValue) {
+        this.discountValue = discountValue;
+    }
 
-    public void setMinimumPrice(double minimumPrice) { this.minimumPrice = minimumPrice; }
+    public double getMinimumPrice() {
+        return minimumPrice;
+    }
 
-    public boolean isActive() { return active; }
+    public void setMinimumPrice(double minimumPrice) {
+        this.minimumPrice = minimumPrice;
+    }
 
-    public void setActive(boolean active) { this.active = active; }
+    public boolean isActive() {
+        return active;
+    }
 
-    public LocalDate getExpiresAt() { return expiresAt; }
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
-    public void getExpiresAt(LocalDate expiresAt) { this.expiresAt = expiresAt; }
+    public LocalDate getExpiresAt() {
+        return expiresAt;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setExpiresAt(LocalDate expiresAt) {
+        this.expiresAt = expiresAt;
+    }
 
-    public LocalDateTime getUpdatedAt() { return createdAt; }
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public String toString() {
+        String symbol = (this.type == DiscountType.Fixed) ? "R$" : "%";
+        return "Code: " + this.code +
+                " | Discount: " + this.discountValue + symbol +
+                " | Min. Price: R$" + String.format("%.2f", this.minimumPrice) +
+                " | Expires: " + this.expiresAt;
+    }
 }
