@@ -1,6 +1,7 @@
 package view;
 
 import controller.CartController;
+import controller.CheckoutController;
 import controller.ProductController;
 import controller.UserController;
 import model.CartItem;
@@ -15,15 +16,17 @@ public class MainView {
     private ProductController productController;
     private UserController userController;
     private CartController cartController;
+    private CheckoutController checkoutController;
     private UserView userView;
-    private Scanner scanner;
 
-    public MainView(ProductController productController, UserController userController, CartController cartController, UserView userView) {
+    public MainView(
+            ProductController productController, UserController userController,
+            CartController cartController, CheckoutController checkoutController, UserView userView) {
         this.productController = productController;
         this.userController = userController;
         this.cartController = cartController;
+        this.checkoutController = checkoutController;
         this.userView = userView;
-        this.scanner = new Scanner(System.in);
     }
 
     public void start() {
@@ -113,11 +116,8 @@ public class MainView {
     }
 
     private void handleLogin() {
-        System.out.print("Username: ");
-        String username = scanner.nextLine();
-
-        System.out.print("Password: ");
-        String password = scanner.nextLine();
+        String username = InputUtils.readString("Username: ");
+        String password = InputUtils.readString("Password: ");
 
         User authenticatedUser = userController.authenticate(username, password);
 
@@ -138,22 +138,23 @@ public class MainView {
 
         showAvailableProducts();
 
-        try {
-            System.out.print("Enter Product ID to add: ");
-            int productId = Integer.parseInt(scanner.nextLine());
+        int productId = InputUtils.readInt("Enter Product ID to add (-1 to cancel): ", -1, Integer.MAX_VALUE);
+        if (productId == -1){
+            System.out.println("Cancelled adding to cart.");
+            return;
+        }
 
-            System.out.print("Enter Quantity: ");
-            int quantity = Integer.parseInt(scanner.nextLine());
+        int quantity = InputUtils.readInt("Enter Quantity (-1 to cancel): ", -1, Integer.MAX_VALUE);
+        if (quantity == -1){
+            System.out.println("Cancelled adding to cart.");
+            return;
+        }
 
-            boolean success = cartController.addProductToCart(productId, quantity);
-
-            if (success) {
-                System.out.println("Success! Item added to your cart.");
-            } else {
-                System.out.println("Error: Could not add item. Check if the Product ID is valid.");
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid input! Please enter only numbers.");
+        boolean success = cartController.addProductToCart(productId, quantity);
+        if (success) {
+            System.out.println("Success! Item added to your cart.");
+        } else {
+            System.out.println("Error: Could not add item. Check if the Product ID is valid.");
         }
     }
 
@@ -169,14 +170,65 @@ public class MainView {
 
         for (CartItem item : items) {
             double subtotal = item.getQuantity() * item.getUnitPrice();
-            System.out.println("Product: " + item.getProduct().getName() +
+            System.out.println("ID: " + item.getProduct().getId() +
+                    " | Product: " + item.getProduct().getName() +
                     " | Qty: " + item.getQuantity() +
-                    " | Unit Price: R$" + item.getUnitPrice() +
-                    " | Subtotal: R$" + subtotal);
+                    " | Unit Price: R$" + String.format("%.2f", item.getUnitPrice()) +
+                    " | Subtotal: R$" + String.format("%.2f", subtotal));
         }
 
         double total = cartController.getLoggedUserCartTotal();
         System.out.println("-------------------------");
-        System.out.println("TOTAL: R$" + total);
+        System.out.println("TOTAL: R$" + String.format("%.2f", total));;
+
+        System.out.println("\n1 - Checkout (Finish Order)");
+        System.out.println("2 - Remove Item from Cart");
+        System.out.println("0 - Back to Menu");
+
+        int option = InputUtils.readInt("Choose an option: ", 0, 2);
+        switch (option){
+            case 1:
+                handleCheckout();
+                break;
+            case 2:
+                handleRemoveFromCart();
+                break;
+        }
+    }
+
+    private void handleCheckout() {
+        System.out.println("\n--- CHECKOUT ---");
+
+        String paymentMethod = InputUtils.readString("Enter Payment Method (e.g., PIX, Credit Card): ");
+
+        String hasCoupon = InputUtils.readString("Do you have a discount coupon? (Y/N)");
+        String couponCode = null;
+
+        if (hasCoupon.equalsIgnoreCase("Y")) {
+            couponCode = InputUtils.readString("Enter Coupon Code: ");
+        }
+
+        boolean success = checkoutController.processCheckout(paymentMethod, couponCode);
+
+        if (success) {
+            System.out.println("\nSuccess! Your order has been placed.");
+            System.out.println("The stock was updated and your cart is now empty.");
+        } else {
+            System.out.println("\nError: Could not process checkout.");
+            System.out.println("Please check if the items are currently in stock.");
+        }
+    }
+
+    private void handleRemoveFromCart() {
+        System.out.println("\n--- REMOVE ITEM ---");
+        int productId = InputUtils.readInt("Enter the Product ID to remove: ", 1, Integer.MAX_VALUE);
+
+        boolean success = cartController.removeProductFromCart(productId);
+
+        if (success) {
+            System.out.println("Item successfully removed from your cart.");
+        } else {
+            System.out.println("Error: Product not found in your cart.");
+        }
     }
 }

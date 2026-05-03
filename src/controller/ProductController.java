@@ -12,10 +12,21 @@ public class ProductController {
         this.productDao = productDao;
 
         // Mock Products
-        productDao.saveProduct(new Product(1, "Laptop", 999.99));
-        productDao.saveProduct(new Product(2, "Smartphone", 499.99));
-        productDao.saveProduct(new Product(3, "Headphones", 199.99));
-        productDao.saveProduct(new Product(4, "Smartwatch", 299.99));
+        Product product1 = new Product(1, "Laptop", 999.99);
+        product1.setStockQuantity(10);
+        productDao.saveProduct(product1);
+
+        Product product2 = new Product(2, "Smartphone", 499.99);
+        product2.setStockQuantity(20);
+        productDao.saveProduct(product2);
+
+        Product product3 = new Product(3, "Headphones", 199.99);
+        product3.setStockQuantity(15);
+        productDao.saveProduct(product3);
+
+        Product product4 = new Product(4, "Smartwatch", 299.99);
+        product4.setStockQuantity(25);
+        productDao.saveProduct(product4);
     }
 
     public boolean registerProduct(int id, String name, double price) {
