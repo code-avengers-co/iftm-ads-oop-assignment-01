@@ -1,5 +1,7 @@
 package model;
 
+import utils.SystemClock;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -16,7 +18,7 @@ public class Person {
         this.name = name;
         this.birthDate = birthDate;
         this.document = document;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = SystemClock.now();
     }
 
     public int getId() {

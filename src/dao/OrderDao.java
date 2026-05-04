@@ -1,6 +1,7 @@
 package dao;
 
 import model.Order;
+import utils.SystemClock;
 
 import java.time.LocalDateTime;
 
@@ -24,18 +25,12 @@ public class OrderDao {
         return true;
     }
 
-    public Order[] getOrders(){
-        Order[] orders = new Order[orderCount];
-        int currentIndex = 0;
-
+    public Order[] getAllOrders() {
+        Order[] exactOrders = new Order[orderCount];
         for (int i = 0; i < orderCount; i++) {
-            if (orderDb[i] != null){
-                orders[currentIndex]= orderDb[i];
-                currentIndex++;
-            }
+            exactOrders[i] = orderDb[i];
         }
-
-        return orders;
+        return exactOrders;
     }
     
     public Order findById(int id){
@@ -48,6 +43,25 @@ public class OrderDao {
         return null; // Order not found
     }
 
+    public Order[] findOrdersByUserId(int userId) {
+        Order[] tempOrders = new Order[orderCount];
+        int count = 0;
+
+        for (int i = 0; i < orderCount; i++) {
+            if (orderDb[i].getUser().getId() == userId) {
+                tempOrders[count] = orderDb[i];
+                count++;
+            }
+        }
+
+        Order[] exactOrders = new Order[count];
+        for (int i = 0; i < count; i++) {
+            exactOrders[i] = tempOrders[i];
+        }
+
+        return exactOrders;
+    }
+
     public boolean updateOrder(Order updatedOrder){
         Order order = findById(updatedOrder.getId());
         if (order == null) {
@@ -58,7 +72,7 @@ public class OrderDao {
         order.setCoupon(updatedOrder.getCoupon());
         order.setTotalValue(updatedOrder.getTotalValue());
         order.setPaymentMethod(updatedOrder.getPaymentMethod());
-        order.setUpdatedAt(LocalDateTime.now());
+        order.setUpdatedAt(SystemClock.now());
 
         return true;
     }

@@ -1,5 +1,7 @@
 package model;
 
+import utils.SystemClock;
+
 import java.time.LocalDateTime;
 
 public class User {
@@ -9,13 +11,14 @@ public class User {
     private String password;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private boolean isAdmin;
 
     public User(int id, Person person, String username, String password) {
         this.id = id;
         this.person = person;
         this.username = username;
         this.password = password;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = SystemClock.now();
     }
 
     public int getId() {
@@ -56,6 +59,14 @@ public class User {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 
     @Override

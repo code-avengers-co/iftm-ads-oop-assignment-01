@@ -4,6 +4,7 @@ import dao.*;
 import model.*;
 import model.enums.DiscountType;
 import utils.CreationIdUtils;
+import utils.SystemClock;
 import utils.UserSession;
 
 public class CheckoutController {
@@ -14,11 +15,12 @@ public class CheckoutController {
     private StockMovementDao stockMovementDao;
     private ProductDao productDao;
     private CouponDao couponDao;
+    private DeliveryDao deliveryDao;
 
     public CheckoutController(
             CartDao cartDao, CartItemDao cartItemDao, OrderDao orderDao,
             OrderItemDao orderItemDao, StockMovementDao stockMovementDao,
-            ProductDao productDao, CouponDao couponDao) {
+            ProductDao productDao, CouponDao couponDao, DeliveryDao deliveryDao) {
         this.cartDao = cartDao;
         this.cartItemDao = cartItemDao;
         this.orderDao = orderDao;
@@ -26,6 +28,7 @@ public class CheckoutController {
         this.stockMovementDao = stockMovementDao;
         this.productDao = productDao;
         this.couponDao = couponDao;
+        this.deliveryDao = deliveryDao;
     }
 
     public boolean processCheckout(String paymentMethod, String couponCode) {
@@ -62,13 +65,16 @@ public class CheckoutController {
         // Apply discount if coupon code is valid
         totalValue = calculateTotalWithDiscount(totalValue, couponCode);
 
-        // 4. Create the order
+        // 4. Create the order and save it
         Order newOrder = new Order(CreationIdUtils.generateOrderId(), user, totalValue, paymentMethod);
 
         boolean orderSaved = orderDao.saveOrder(newOrder);
         if (!orderSaved) {
             return false;
         }
+
+        Delivery newDelivery = new Delivery(CreationIdUtils.generateDeliveryId(), newOrder);
+        deliveryDao.saveDelivery(newDelivery);
 
         // 5. Copy CartItems to OrderItems
         for (CartItem cartItem : cartItems) {
@@ -114,7 +120,7 @@ public class CheckoutController {
         Coupon coupon = couponDao.findByCode(couponCode);
 
         // 1. Check if coupon exists, is active and not expired
-        if (coupon == null || !coupon.isActive() || coupon.getExpiresAt().isBefore(java.time.LocalDate.now())) {
+        if (coupon == null || !coupon.isActive() || coupon.getExpiresAt().isBefore(SystemClock.today())) {
             return subtotal;
         }
 
