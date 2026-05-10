@@ -3,8 +3,6 @@ package dao;
 import model.Person;
 import utils.SystemClock;
 
-import java.time.LocalDateTime;
-
 public class PersonDao {
     private Person[] personDb;
     private int personCount;

@@ -3,8 +3,6 @@ package dao;
 import model.Product;
 import utils.SystemClock;
 
-import java.time.LocalDateTime;
-
 public class ProductDao {
     private Product[] products;
     private int count; // Current products count
@@ -88,6 +86,7 @@ public class ProductDao {
         }
 
         product.setActive(false);
+        product.setUpdatedAt(SystemClock.now());
         return true;
     }
 }

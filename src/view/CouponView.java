@@ -2,9 +2,7 @@ package view;
 
 import controller.CouponController;
 import model.Coupon;
-import model.Product;
 import model.enums.DiscountType;
-import utils.CreationIdUtils;
 import utils.InputUtils;
 
 import java.time.LocalDate;
@@ -57,8 +55,6 @@ public class CouponView {
     private void renderCreateCoupon() {
         System.out.println("Enter Coupon Details");
 
-        int generateId = CreationIdUtils.generateCouponId();
-
         System.out.println("Coupon Code: ");
         String code = scanner.nextLine();
 
@@ -86,7 +82,7 @@ public class CouponView {
             }
         }
 
-        boolean succes = couponController.createCoupon(generateId, code, discountType, discountValue, minimumPrice, expiresAt);
+        boolean succes = couponController.createCoupon(code, discountType, discountValue, minimumPrice, expiresAt);
 
         if (succes) {
             System.out.println("Product saved successfully!");

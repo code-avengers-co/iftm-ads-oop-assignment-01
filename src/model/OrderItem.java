@@ -1,5 +1,6 @@
 package model;
 
+import utils.CreationIdUtils;
 import utils.SystemClock;
 
 import java.time.LocalDateTime;
@@ -14,8 +15,8 @@ public class OrderItem {
      private LocalDateTime createdAt;
      private LocalDateTime updatedAt;
 
-    public OrderItem(int id, Order order, Product product, int quantity, double unitPrice) {
-        this.id = id;
+    public OrderItem(Order order, Product product, int quantity, double unitPrice) {
+        this.id = CreationIdUtils.generateOrderItemId();
         this.order = order;
         this.product = product;
         this.quantity = quantity;

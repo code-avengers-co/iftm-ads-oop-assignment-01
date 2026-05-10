@@ -15,31 +15,31 @@ public class UserController {
         this.userDao = userDao;
         this.personDao = personDao;
 
-        Person person = new Person(1, "Lucas Admin", LocalDate.of(1990, 1, 1), "123456789");
+        Person person = new Person("Admin", LocalDate.of(1990, 1, 1), "123456789");
         personDao.savePerson(person);
 
-        User admin = new User(1, person, "admin", "123");
+        User admin = new User(person, "admin", "admin");
         admin.setAdmin(true);
         userDao.saveUser(admin);
     }
 
     public boolean registerUser(
-            int personId, String personName, LocalDate personBirthDate, String personDocument,
-            int userId, String username, String password) {
+            String personName, LocalDate personBirthDate, String personDocument,
+            String username, String password) {
         // 1. Create the person
-        Person person = new Person(personId, personName, personBirthDate, personDocument);
+        Person person = new Person(personName, personBirthDate, personDocument);
         boolean personIsCreated = personDao.savePerson(person);
         if (!personIsCreated){
             return false; // Failed to create person, so not proceed with user creation
         }
 
         // 2. Create the user
-        User user = new User(userId, person, username, password);
+        User user = new User(person, username, password);
         boolean userIsCreated = userDao.saveUser(user);
 
         // 3. Rollback person
         if (!userIsCreated) {
-            personDao.deletePerson(personId);
+            personDao.deletePerson(person.getId());
             return false;
         }
 

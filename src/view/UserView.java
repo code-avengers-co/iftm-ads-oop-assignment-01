@@ -2,7 +2,6 @@ package view;
 
 import controller.UserController;
 import model.User;
-import utils.CreationIdUtils;
 import utils.InputUtils;
 
 import java.time.LocalDate;
@@ -51,9 +50,6 @@ public class UserView {
     public void renderRegisterUser() {
         System.out.println("\n--- REGISTER NEW USER ---");
 
-        int personId = CreationIdUtils.generatePersonId();
-        int userId = CreationIdUtils.generateUserId();
-
         System.out.println("[ Personal Data ]");
         System.out.print("Name: ");
         String name = scanner.nextLine();
@@ -79,7 +75,7 @@ public class UserView {
         System.out.print("Password: ");
         String password = scanner.nextLine();
 
-        boolean success = userController.registerUser(personId, name, birthDate, document, userId, username, password);
+        boolean success = userController.registerUser(name, birthDate, document, username, password);
 
         if (success) {
             System.out.println("\nUser registered successfully!");

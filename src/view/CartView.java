@@ -2,7 +2,6 @@ package view;
 
 import controller.CartController;
 import controller.CheckoutController;
-import controller.ProductController;
 import model.CartItem;
 import utils.InputUtils;
 

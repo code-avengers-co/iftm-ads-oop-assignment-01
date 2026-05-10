@@ -7,7 +7,6 @@ import model.Cart;
 import model.CartItem;
 import model.Product;
 import model.User;
-import utils.CreationIdUtils;
 import utils.UserSession;
 
 public class CartController {
@@ -33,7 +32,7 @@ public class CartController {
         Cart cart = cartDao.findOpenCartByUser(userId);
         if (cart == null) {
             // 1.1 If it doesn't exist create one and save it.
-            cart = new Cart(CreationIdUtils.generateCartId(), user);
+            cart = new Cart(user);
             boolean cartSaved = cartDao.saveCart(cart);
             if (!cartSaved){
                 return false; // Failed to save in DB
@@ -60,7 +59,6 @@ public class CartController {
 
         // 4. If no duplicate found, create a new cart item and save it.
         CartItem newCartItem = new CartItem(
-                CreationIdUtils.generateCartItemId(),
                 cart,
                 product,
                 quantity,

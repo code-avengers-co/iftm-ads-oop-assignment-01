@@ -1,6 +1,7 @@
 package model;
 
 import model.enums.CartStatus;
+import utils.CreationIdUtils;
 import utils.SystemClock;
 
 import java.time.LocalDateTime;
@@ -12,8 +13,8 @@ public class Cart {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Cart(int id, User user) {
-        this.id = id;
+    public Cart(User user) {
+        this.id = CreationIdUtils.generateCartId();
         this.user = user;
         this.status = CartStatus.Open;
         this.createdAt = SystemClock.now();

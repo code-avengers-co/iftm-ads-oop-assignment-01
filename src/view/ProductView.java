@@ -2,7 +2,6 @@ package view;
 
 import controller.ProductController;
 import model.Product;
-import utils.CreationIdUtils;
 import utils.InputUtils;
 
 import java.util.Scanner;
@@ -44,8 +43,10 @@ public class ProductView {
         System.out.println("------------------ PRODUCTS ON SALE ---------------------------");
 
         Product[] products = productController.getActiveProducts();
-        for (Product p : products) {
-            System.out.println(p);
+        for (Product product : products) {
+            if (product != null) {
+                System.out.println(product);
+            }
         }
 
         System.out.println("---------------------------------------------------------------");
@@ -68,15 +69,13 @@ public class ProductView {
     private void renderRegisterProduct() {
         System.out.println("Enter product details:");
 
-        int generatedId = CreationIdUtils.generateProductId();
-
         System.out.print("Name: ");
         String name = scanner.nextLine();
 
         System.out.print("Price: ");
         double price = Double.parseDouble(scanner.nextLine());
 
-        boolean success = productController.registerProduct(generatedId, name, price);
+        boolean success = productController.registerProduct(name, price);
 
         if (success) {
             System.out.println("Product saved successfully!");
@@ -98,17 +97,30 @@ public class ProductView {
     }
 
     private void renderUpdateProduct() {
-        Product[] allProducts = productController.getAllProducts();
-        if (allProducts.length == 0){
+        Product[] activeProducts = productController.getActiveProducts();
+        if (activeProducts.length == 0){
             System.out.println("--- EDIT PRODUCT ---");
             System.out.println("No products available to edit.");
             return;
         }
 
-        showProductList("--- EDIT PRODUCT ---\nPRODUCT LIST:", allProducts);
+        showProductList("--- EDIT PRODUCT ---\nPRODUCT LIST:", activeProducts);
 
         System.out.print("Enter the ID of the product to edit: ");
         int id = Integer.parseInt(scanner.nextLine());
+
+        boolean isEditable = false;
+        for (Product p : activeProducts) {
+            if (p.getId() == id) {
+                isEditable = true;
+                break;
+            }
+        }
+
+        if (!isEditable) {
+            System.out.println("Error: Product not found or is already deleted.");
+            return;
+        }
 
         boolean hasProduct = productController.hasProduct(id);
         if (!hasProduct) {

@@ -1,5 +1,6 @@
 package model;
 
+import utils.CreationIdUtils;
 import utils.SystemClock;
 
 import java.time.LocalDateTime;
@@ -14,8 +15,8 @@ public class Product {
     private LocalDateTime updatedAt;
     private int stockQuantity;
 
-    public Product(int id, String name, double price){
-        this.id = id;
+    public Product(String name, double price){
+        this.id = CreationIdUtils.generateProductId();
         this.name = name;
         this.price = price;
         this.createdAt = SystemClock.now();

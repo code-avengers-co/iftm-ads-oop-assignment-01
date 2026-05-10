@@ -2,8 +2,7 @@ package controller;
 
 import dao.*;
 import model.*;
-import model.enums.DiscountType;
-import utils.CreationIdUtils;
+import model.enums.OrderStatus;
 import utils.SystemClock;
 import utils.UserSession;
 
@@ -50,8 +49,8 @@ public class CheckoutController {
             return false; // Empty cart
         }
 
-        for (CartItem item : cartItems){
-            if (item.getQuantity() > item.getProduct().getStockQuantity()){
+        for (CartItem item : cartItems) {
+            if (item.getQuantity() > item.getProduct().getStockQuantity()) {
                 return false; // Not enough stock for product
             }
         }
@@ -66,36 +65,33 @@ public class CheckoutController {
         totalValue = calculateTotalWithDiscount(totalValue, couponCode);
 
         // 4. Create the order and save it
-        Order newOrder = new Order(CreationIdUtils.generateOrderId(), user, totalValue, paymentMethod);
+        Order newOrder = new Order(user, totalValue, paymentMethod);
+        newOrder.setStatus(OrderStatus.Paid);
 
         boolean orderSaved = orderDao.saveOrder(newOrder);
         if (!orderSaved) {
             return false;
         }
 
-        Delivery newDelivery = new Delivery(CreationIdUtils.generateDeliveryId(), newOrder);
+        Delivery newDelivery = new Delivery(newOrder);
         deliveryDao.saveDelivery(newDelivery);
 
         // 5. Copy CartItems to OrderItems
         for (CartItem cartItem : cartItems) {
             // 5.1 Create OrderItem and Save it
             OrderItem orderItem = new OrderItem(
-                    CreationIdUtils.generateOrderItemId(),
                     newOrder,
                     cartItem.getProduct(),
                     cartItem.getQuantity(),
-                    cartItem.getUnitPrice()
-            );
+                    cartItem.getUnitPrice());
             orderItemDao.saveOrderItem(orderItem);
 
             // 5.2 Create StockMovement and Save it
             StockMovement movement = new StockMovement(
-                    CreationIdUtils.generateStockMovementId(),
                     cartItem.getProduct(),
                     cartItem.getQuantity(),
                     model.enums.MovementType.OUT,
-                    cartItem.getUnitPrice()
-            );
+                    cartItem.getUnitPrice());
             stockMovementDao.saveStockMovement(movement);
 
             // 5.3 Update Product Stock
@@ -131,7 +127,7 @@ public class CheckoutController {
 
         // 3 Apply discount
         double finalTotal;
-        if (coupon.getType() == model.enums.DiscountType.Fixed){
+        if (coupon.getType() == model.enums.DiscountType.Fixed) {
             finalTotal = subtotal - coupon.getDiscountValue();
         } else {
             finalTotal = subtotal - (subtotal * (coupon.getDiscountValue() / 100.0));

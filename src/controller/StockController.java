@@ -5,7 +5,6 @@ import dao.StockMovementDao;
 import model.Product;
 import model.StockMovement;
 import model.enums.MovementType;
-import utils.CreationIdUtils;
 
 public class StockController {
     private StockMovementDao stockMovementDao;
@@ -24,7 +23,6 @@ public class StockController {
 
         // 1. Register a new StockMovement
         StockMovement movement = new StockMovement(
-                CreationIdUtils.generateStockMovementId(),
                 product,
                 quantity,
                 type,

@@ -1,5 +1,6 @@
 package model;
 
+import utils.CreationIdUtils;
 import utils.SystemClock;
 
 import java.time.LocalDate;
@@ -13,8 +14,8 @@ public class Person {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Person(int id, String name, LocalDate birthDate, String document) {
-        this.id = id;
+    public Person(String name, LocalDate birthDate, String document) {
+        this.id = CreationIdUtils.generatePersonId();
         this.name = name;
         this.birthDate = birthDate;
         this.document = document;

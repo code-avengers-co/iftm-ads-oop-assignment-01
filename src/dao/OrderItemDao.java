@@ -3,8 +3,6 @@ package dao;
 import model.OrderItem;
 import utils.SystemClock;
 
-import java.time.LocalDateTime;
-
 public class OrderItemDao {
     private OrderItem[] orderItemDb;
     private int orderItemCount;
