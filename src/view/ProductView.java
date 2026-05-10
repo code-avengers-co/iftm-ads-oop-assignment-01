@@ -2,7 +2,6 @@ package view;
 
 import controller.ProductController;
 import model.Product;
-import utils.CreationIdUtils;
 import utils.InputUtils;
 
 import java.util.Scanner;
@@ -68,15 +67,13 @@ public class ProductView {
     private void renderRegisterProduct() {
         System.out.println("Enter product details:");
 
-        int generatedId = CreationIdUtils.generateProductId();
-
         System.out.print("Name: ");
         String name = scanner.nextLine();
 
         System.out.print("Price: ");
         double price = Double.parseDouble(scanner.nextLine());
 
-        boolean success = productController.registerProduct(generatedId, name, price);
+        boolean success = productController.registerProduct(name, price);
 
         if (success) {
             System.out.println("Product saved successfully!");

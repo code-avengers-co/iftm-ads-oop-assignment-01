@@ -1,5 +1,6 @@
 package model;
 
+import utils.CreationIdUtils;
 import utils.SystemClock;
 
 import java.time.LocalDateTime;
@@ -13,8 +14,8 @@ public class User {
     private LocalDateTime updatedAt;
     private boolean isAdmin;
 
-    public User(int id, Person person, String username, String password) {
-        this.id = id;
+    public User(Person person, String username, String password) {
+        this.id = CreationIdUtils.generateUserId();
         this.person = person;
         this.username = username;
         this.password = password;

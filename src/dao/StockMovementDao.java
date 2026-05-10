@@ -3,8 +3,6 @@ package dao;
 import model.StockMovement;
 import utils.SystemClock;
 
-import java.time.LocalDateTime;
-
 public class StockMovementDao {
     private StockMovement[] stockMovementDb;
     private int stockMovementCount;

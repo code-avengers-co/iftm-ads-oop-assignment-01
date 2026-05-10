@@ -4,7 +4,6 @@ import dao.*;
 import model.*;
 import model.enums.DiscountType;
 import model.enums.OrderStatus;
-import utils.CreationIdUtils;
 import utils.SystemClock;
 import utils.UserSession;
 
@@ -67,7 +66,7 @@ public class CheckoutController {
         totalValue = calculateTotalWithDiscount(totalValue, couponCode);
 
         // 4. Create the order and save it
-        Order newOrder = new Order(CreationIdUtils.generateOrderId(), user, totalValue, paymentMethod);
+        Order newOrder = new Order(user, totalValue, paymentMethod);
         newOrder.setStatus(OrderStatus.Paid);
 
         boolean orderSaved = orderDao.saveOrder(newOrder);
@@ -75,14 +74,13 @@ public class CheckoutController {
             return false;
         }
 
-        Delivery newDelivery = new Delivery(CreationIdUtils.generateDeliveryId(), newOrder);
+        Delivery newDelivery = new Delivery(newOrder);
         deliveryDao.saveDelivery(newDelivery);
 
         // 5. Copy CartItems to OrderItems
         for (CartItem cartItem : cartItems) {
             // 5.1 Create OrderItem and Save it
             OrderItem orderItem = new OrderItem(
-                    CreationIdUtils.generateOrderItemId(),
                     newOrder,
                     cartItem.getProduct(),
                     cartItem.getQuantity(),
@@ -92,7 +90,6 @@ public class CheckoutController {
 
             // 5.2 Create StockMovement and Save it
             StockMovement movement = new StockMovement(
-                    CreationIdUtils.generateStockMovementId(),
                     cartItem.getProduct(),
                     cartItem.getQuantity(),
                     model.enums.MovementType.OUT,

@@ -1,6 +1,7 @@
 package model;
 
 import model.enums.DiscountType;
+import utils.CreationIdUtils;
 import utils.SystemClock;
 
 import java.time.LocalDate;
@@ -17,8 +18,8 @@ public class Coupon {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Coupon(int id, String code, DiscountType discounType, double discountValue, double minimumPrice, LocalDate expiresAt) {
-        this.id = id;
+    public Coupon(String code, DiscountType discounType, double discountValue, double minimumPrice, LocalDate expiresAt) {
+        this.id = CreationIdUtils.generateCouponId();
         this.code = code;
         this.type = discounType;
         this.discountValue = discountValue;

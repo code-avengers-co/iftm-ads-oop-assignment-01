@@ -1,6 +1,6 @@
 package view;
 
-import controller.ProductController;
+
 import controller.StockController;
 import model.enums.MovementType;
 import utils.InputUtils;

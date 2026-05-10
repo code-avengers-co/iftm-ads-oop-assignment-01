@@ -1,11 +1,11 @@
 package dao;
 
 import model.Coupon;
-import model.Product;
+
 import utils.SystemClock;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 
 public class CouponDao {
     private Coupon[] coupons;

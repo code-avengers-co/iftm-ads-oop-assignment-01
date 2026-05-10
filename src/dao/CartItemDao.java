@@ -3,8 +3,6 @@ package dao;
 import model.CartItem;
 import utils.SystemClock;
 
-import java.time.LocalDateTime;
-
 public class CartItemDao {
     private CartItem[] cartItemDb;
     private int cartItemCount;

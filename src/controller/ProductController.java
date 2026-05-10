@@ -3,7 +3,6 @@ package controller;
 import dao.ProductDao;
 import model.Product;
 
-import java.time.LocalDateTime;
 
 public class ProductController {
     private ProductDao productDao;
@@ -12,9 +11,9 @@ public class ProductController {
         this.productDao = productDao;
     }
 
-    public boolean registerProduct(int id, String name, double price) {
-        // 1. Create the product
-        Product newProduct = new Product(id, name, price);
+    public boolean registerProduct(String name, double price) {
+        // 1. Create the product (ID is auto-generated in constructor)
+        Product newProduct = new Product(name, price);
 
         // 2. Send to DAO
         return productDao.saveProduct(newProduct);
@@ -24,18 +23,21 @@ public class ProductController {
         return productDao.getActiveProducts();
     }
 
-    public Product[] getAllProducts(){
-        return productDao.getAllProducts();
-    }
 
     public boolean hasProduct(int productId){
         return productDao.findById(productId) != null;
     }
 
     public boolean updateProduct(int id, String name, double price) {
-        Product updatedData = new Product(id, name, price);
+        Product product = productDao.findById(id);
+        if (product == null) {
+            return false;
+        }
 
-        return productDao.updateProduct(updatedData);
+        product.setName(name);
+        product.setPrice(price);
+
+        return productDao.updateProduct(product);
     }
 
     public boolean deleteProduct(int id){
