@@ -3,6 +3,7 @@ package controller;
 import dao.*;
 import model.*;
 import model.enums.DiscountType;
+import model.enums.OrderStatus;
 import utils.CreationIdUtils;
 import utils.SystemClock;
 import utils.UserSession;
@@ -67,6 +68,7 @@ public class CheckoutController {
 
         // 4. Create the order and save it
         Order newOrder = new Order(CreationIdUtils.generateOrderId(), user, totalValue, paymentMethod);
+        newOrder.setStatus(OrderStatus.Paid);
 
         boolean orderSaved = orderDao.saveOrder(newOrder);
         if (!orderSaved) {
