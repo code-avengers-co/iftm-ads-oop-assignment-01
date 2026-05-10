@@ -2,7 +2,6 @@ package controller;
 
 import dao.*;
 import model.*;
-import model.enums.DiscountType;
 import model.enums.OrderStatus;
 import utils.SystemClock;
 import utils.UserSession;
@@ -50,8 +49,8 @@ public class CheckoutController {
             return false; // Empty cart
         }
 
-        for (CartItem item : cartItems){
-            if (item.getQuantity() > item.getProduct().getStockQuantity()){
+        for (CartItem item : cartItems) {
+            if (item.getQuantity() > item.getProduct().getStockQuantity()) {
                 return false; // Not enough stock for product
             }
         }
@@ -84,8 +83,7 @@ public class CheckoutController {
                     newOrder,
                     cartItem.getProduct(),
                     cartItem.getQuantity(),
-                    cartItem.getUnitPrice()
-            );
+                    cartItem.getUnitPrice());
             orderItemDao.saveOrderItem(orderItem);
 
             // 5.2 Create StockMovement and Save it
@@ -93,8 +91,7 @@ public class CheckoutController {
                     cartItem.getProduct(),
                     cartItem.getQuantity(),
                     model.enums.MovementType.OUT,
-                    cartItem.getUnitPrice()
-            );
+                    cartItem.getUnitPrice());
             stockMovementDao.saveStockMovement(movement);
 
             // 5.3 Update Product Stock
@@ -130,7 +127,7 @@ public class CheckoutController {
 
         // 3 Apply discount
         double finalTotal;
-        if (coupon.getType() == model.enums.DiscountType.Fixed){
+        if (coupon.getType() == model.enums.DiscountType.Fixed) {
             finalTotal = subtotal - coupon.getDiscountValue();
         } else {
             finalTotal = subtotal - (subtotal * (coupon.getDiscountValue() / 100.0));

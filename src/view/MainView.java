@@ -3,7 +3,6 @@ package view;
 import controller.*;
 import model.User;
 import utils.InputUtils;
-import utils.SystemClock;
 import utils.UserSession;
 
 public class MainView {
@@ -52,7 +51,7 @@ public class MainView {
         do {
             if (!UserSession.isLoggedIn()) {
                 option = showGuestMenu();
-            } else if (UserSession.getLoggedUser().isAdmin()){
+            } else if (UserSession.getLoggedUser().isAdmin()) {
                 option = showAdminMenu();
             } else {
                 option = showLoggedMenu();
@@ -61,11 +60,11 @@ public class MainView {
     }
 
     private int showGuestMenu() {
-        String menu = """ 
-                      1 - Login
-                      2 - Create Account
-                      0 - Exit
-                      """;
+        String menu = """
+                1 - Login
+                2 - Create Account
+                0 - Exit
+                """;
         System.out.printf(menu);
 
         int option = InputUtils.readInt("Choose an option: ", 0, 2);
@@ -92,7 +91,7 @@ public class MainView {
         System.out.println("System Date: " + utils.SystemClock.today());
         System.out.println("1 - Manage Products");
         System.out.println("2 - Manage Coupons");
-        System.out.println("3 - Manual Stock Entry (Entrada de Estoque)");
+        System.out.println("3 - Manual Stock Entry");
         System.out.println("4 - Manage Users");
         System.out.println("5 - View Reports");
         System.out.println("6 - Advance System Time (Calendar)");
@@ -187,7 +186,7 @@ public class MainView {
         }
     }
 
-    private void handleCreateAccount(){
+    private void handleCreateAccount() {
         userView.renderRegisterUser();
     }
 }

@@ -43,8 +43,10 @@ public class ProductView {
         System.out.println("------------------ PRODUCTS ON SALE ---------------------------");
 
         Product[] products = productController.getActiveProducts();
-        for (Product p : products) {
-            System.out.println(p);
+        for (Product product : products) {
+            if (product != null) {
+                System.out.println(product);
+            }
         }
 
         System.out.println("---------------------------------------------------------------");

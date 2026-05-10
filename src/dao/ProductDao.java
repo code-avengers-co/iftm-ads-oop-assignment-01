@@ -86,6 +86,7 @@ public class ProductDao {
         }
 
         product.setActive(false);
+        product.setUpdatedAt(SystemClock.now());
         return true;
     }
 }
