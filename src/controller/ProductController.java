@@ -41,6 +41,4 @@ public class ProductController {
     public boolean deleteProduct(int id){
         return productDao.deleteProduct(id);
     }
-
-
 }

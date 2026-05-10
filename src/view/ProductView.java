@@ -98,17 +98,30 @@ public class ProductView {
     }
 
     private void renderUpdateProduct() {
-        Product[] allProducts = productController.getAllProducts();
-        if (allProducts.length == 0){
+        Product[] activeProducts = productController.getActiveProducts();
+        if (activeProducts.length == 0){
             System.out.println("--- EDIT PRODUCT ---");
             System.out.println("No products available to edit.");
             return;
         }
 
-        showProductList("--- EDIT PRODUCT ---\nPRODUCT LIST:", allProducts);
+        showProductList("--- EDIT PRODUCT ---\nPRODUCT LIST:", activeProducts);
 
         System.out.print("Enter the ID of the product to edit: ");
         int id = Integer.parseInt(scanner.nextLine());
+
+        boolean isEditable = false;
+        for (Product p : activeProducts) {
+            if (p.getId() == id) {
+                isEditable = true;
+                break;
+            }
+        }
+
+        if (!isEditable) {
+            System.out.println("Error: Product not found or is already deleted.");
+            return;
+        }
 
         boolean hasProduct = productController.hasProduct(id);
         if (!hasProduct) {
