@@ -5,7 +5,7 @@ import view.*;
 public class Main {
     static void main(String[] args) {
         // 1. Create DAO (Simulate DATABASE)
-        ProductDao productDao = new ProductDao(100);
+        ProductDao productDao = new ProductDao();
         PersonDao personDao = new PersonDao(100);
         UserDao userDao = new UserDao(100);
         CartDao cartDao = new CartDao(100);

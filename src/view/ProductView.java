@@ -4,6 +4,7 @@ import controller.ProductController;
 import model.Product;
 import utils.InputUtils;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class ProductView {
@@ -42,7 +43,7 @@ public class ProductView {
     public void showAvailableProducts() {
         System.out.println("------------------ PRODUCTS ON SALE ---------------------------");
 
-        Product[] products = productController.getActiveProducts();
+        List<Product> products = productController.getActiveProducts();
         for (Product product : products) {
             if (product != null) {
                 System.out.println(product);
@@ -75,7 +76,10 @@ public class ProductView {
         System.out.print("Price: ");
         double price = Double.parseDouble(scanner.nextLine());
 
-        boolean success = productController.registerProduct(name, price);
+        System.out.print("Description: ");
+        String description = scanner.nextLine();
+
+        boolean success = productController.registerProduct(name, description, price);
 
         if (success) {
             System.out.println("Product saved successfully!");
@@ -86,9 +90,9 @@ public class ProductView {
 
     private void renderListProducts() {
         System.out.println("Listing all active products...");
-        Product[] activeProducts = productController.getActiveProducts();
+        List<Product> activeProducts = productController.getActiveProducts();
 
-        if (activeProducts.length == 0) {
+        if (activeProducts.isEmpty()) {
             System.out.println("No active products found.");
             return;
         }
@@ -97,8 +101,8 @@ public class ProductView {
     }
 
     private void renderUpdateProduct() {
-        Product[] activeProducts = productController.getActiveProducts();
-        if (activeProducts.length == 0){
+        List<Product> activeProducts = productController.getActiveProducts();
+        if (activeProducts.isEmpty()){
             System.out.println("--- EDIT PRODUCT ---");
             System.out.println("No products available to edit.");
             return;
@@ -134,7 +138,10 @@ public class ProductView {
         System.out.print("New Price: ");
         double price = Double.parseDouble(scanner.nextLine());
 
-        boolean isUpdated = productController.updateProduct(id, name, price);
+        System.out.print("New Description: ");
+        String description = scanner.nextLine();
+
+        boolean isUpdated = productController.updateProduct(id, name, description, price);
 
         if (isUpdated) {
             System.out.println("Product updated successfully!");
@@ -144,9 +151,9 @@ public class ProductView {
     }
 
     private void renderDeleteProduct() {
-        Product[] activeProducts = productController.getActiveProducts();
+        List<Product> activeProducts = productController.getActiveProducts();
 
-        if (activeProducts.length == 0) {
+        if (activeProducts.isEmpty()) {
             System.out.println("--- DELETE PRODUCT ---");
             System.out.println("No active products available to delete.");
             return;
@@ -171,12 +178,12 @@ public class ProductView {
         }
     }
 
-    void showProductList(String title, Product[] products) {
+    void showProductList(String title, List<Product> products) {
         if (title != null && !title.isEmpty()) {
             System.out.println(title);
         }
 
-        if (products.length == 0){
+        if (products.isEmpty()){
             System.out.println("No products found.");
             return;
         }
