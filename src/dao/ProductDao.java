@@ -38,6 +38,7 @@ public class ProductDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return false;
     }
 
@@ -62,6 +63,7 @@ public class ProductDao {
                         resultSet.getTimestamp("created_at").toLocalDateTime(),
                         resultSet.getTimestamp("updated_at").toLocalDateTime()
                 );
+
                 allProducts.add(product);
             }
         } catch (SQLException e) {
