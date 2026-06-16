@@ -3,6 +3,7 @@ package dao;
 import model.Person;
 import model.User;
 import utils.DatabaseConnection;
+import utils.PasswordUtils;
 import utils.SystemClock;
 
 import java.sql.*;
@@ -24,7 +25,8 @@ public class UserDao {
 
             stmt.setInt(1, user.getPerson().getId());
             stmt.setString(2, user.getUsername());
-            stmt.setString(3, user.getPassword());
+            String hashedPassword = PasswordUtils.hashPassword(user.getPassword());
+            stmt.setString(3, hashedPassword);
             stmt.setTimestamp(4, java.sql.Timestamp.valueOf(user.getCreatedAt()));
             stmt.setTimestamp(5, java.sql.Timestamp.valueOf(user.getUpdatedAt()));
             stmt.setBoolean(6, user.isAdmin());
