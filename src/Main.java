@@ -7,7 +7,7 @@ public class Main {
         // 1. Create DAO (Simulate DATABASE)
         ProductDao productDao = new ProductDao();
         PersonDao personDao = new PersonDao();
-        UserDao userDao = new UserDao(100);
+        UserDao userDao = new UserDao(personDao);
         CartDao cartDao = new CartDao(100);
         CartItemDao cartItemDao = new CartItemDao(100);
         OrderDao orderDao = new OrderDao(100);

@@ -19,6 +19,7 @@ public class Person {
         this.birthDate = birthDate;
         this.document = document;
         this.createdAt = SystemClock.now();
+        this.updatedAt = SystemClock.now();
     }
 
     public Person(int id, String name, LocalDate birthDate, String document, LocalDateTime createdAt, LocalDateTime updatedAt){

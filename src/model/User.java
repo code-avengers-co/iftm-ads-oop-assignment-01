@@ -19,6 +19,7 @@ public class User {
         this.username = username;
         this.password = password;
         this.createdAt = SystemClock.now();
+        this.updatedAt = SystemClock.now();
         this.isAdmin = false;
     }
 

@@ -57,7 +57,7 @@ public class UserDao {
              PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet resultSet = stmt.executeQuery()) {
 
-            int personId = resultSet.getInt("person_id");
+                int personId = resultSet.getInt("person_id");
             Person person = personDao.findById(personId);
 
             while (resultSet.next()) {
