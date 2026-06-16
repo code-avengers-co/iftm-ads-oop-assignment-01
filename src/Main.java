@@ -6,7 +6,7 @@ public class Main {
     static void main(String[] args) {
         // 1. Create DAO (Simulate DATABASE)
         ProductDao productDao = new ProductDao();
-        PersonDao personDao = new PersonDao(100);
+        PersonDao personDao = new PersonDao();
         UserDao userDao = new UserDao(100);
         CartDao cartDao = new CartDao(100);
         CartItemDao cartItemDao = new CartItemDao(100);
