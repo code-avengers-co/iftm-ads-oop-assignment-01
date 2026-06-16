@@ -113,6 +113,41 @@ public class UserDao {
         return null; // User not found
     }
 
+    public User authenticate(String username, String rawPassword){
+        String sql = "SELECT * FROM user WHERE username = ? and password = ?";
+        DatabaseConnection factory = new DatabaseConnection();
+
+        try(Connection connection = factory.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setString(1, username);
+
+            String hashedPassword = PasswordUtils.hashPassword(rawPassword);
+            stmt.setString(2, hashedPassword);
+
+            try (ResultSet resultSet = stmt.executeQuery()) {
+                if (resultSet.next()) {
+                    int personId = resultSet.getInt("person_id");
+                    Person person = personDao.findById(personId);
+
+                    return new User(
+                            resultSet.getInt("id"),
+                            person,
+                            resultSet.getString("username"),
+                            resultSet.getString("password"),
+                            resultSet.getTimestamp("created_at").toLocalDateTime(),
+                            resultSet.getTimestamp("updated_at").toLocalDateTime(),
+                            resultSet.getBoolean("is_admin")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null; // Authentication failed
+    }
+
     public boolean updateUser(User updatedUser) {
         String sql = "UPDATE user SET person_id = ?, username = ?, password = ?, updated_at = ?, is_admin = ? WHERE id = ?";
         DatabaseConnection factory = new DatabaseConnection();

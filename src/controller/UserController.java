@@ -45,13 +45,6 @@ public class UserController {
     }
 
     public User authenticate(String username, String password) {
-        List<User>  users = userDao.getUsers();
-        for (User user : users) {
-            if (username.equals(user.getUsername()) && password.equals(user.getPassword())) {
-                return user; // Authentication successful
-            }
-        }
-
-        return null; // Authentication failed
+        return userDao.authenticate(username, password); 
     }
 }
