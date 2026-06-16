@@ -15,15 +15,28 @@ public class User {
     private boolean isAdmin;
 
     public User(Person person, String username, String password) {
-        this.id = CreationIdUtils.generateUserId();
         this.person = person;
         this.username = username;
         this.password = password;
         this.createdAt = SystemClock.now();
+        this.isAdmin = false;
     }
 
+    public User(int id, Person person, String username, String password, LocalDateTime createdAt, LocalDateTime updatedAt, boolean isAdmin) {
+        this.id = id;
+        this.person = person;
+        this.username = username;
+        this.password = password;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.isAdmin = isAdmin;
+    }
     public int getId() {
         return id;
+    }
+
+    public void setId(int id){
+        this.id = id;
     }
 
     public Person getPerson() {
