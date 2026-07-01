@@ -5,6 +5,9 @@ import model.Delivery;
 import model.enums.DeliveryStatus;
 import utils.SystemClock;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DeliveryController {
     private DeliveryDao deliveryDao;
 
@@ -12,20 +15,13 @@ public class DeliveryController {
         this.deliveryDao = deliveryDao;
     }
 
-    public Delivery[] getDeliveriesByStatus(DeliveryStatus status) {
-        Delivery[] allDeliveries = deliveryDao.getAllDeliveries();
-        int count = 0;
+    public List<Delivery> getDeliveriesByStatus(DeliveryStatus status) {
+        List<Delivery> allDeliveries = deliveryDao.getAllDeliveries();
+        List<Delivery> filteredDeliveries = new ArrayList<>();
 
-        for (Delivery delivery : allDeliveries) {
-            if (delivery.getStatus() == status) count++;
-        }
-
-        Delivery[] filteredDeliveries = new Delivery[count];
-        int index = 0;
         for (Delivery d : allDeliveries) {
             if (d.getStatus() == status) {
-                filteredDeliveries[index] = d;
-                index++;
+                filteredDeliveries.add(d);
             }
         }
 

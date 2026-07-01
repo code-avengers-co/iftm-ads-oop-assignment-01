@@ -4,6 +4,7 @@ import controller.DeliveryController;
 import model.Delivery;
 import model.enums.DeliveryStatus;
 import utils.InputUtils;
+import java.util.List;
 
 public class DeliveryView{
     private DeliveryController deliveryController;
@@ -34,10 +35,10 @@ public class DeliveryView{
     }
 
     private void handleViewPendingDeliveries() {
-        Delivery[] pendingDeliveries = deliveryController.getDeliveriesByStatus(DeliveryStatus.Preparing);
+        List<Delivery> pendingDeliveries = deliveryController.getDeliveriesByStatus(DeliveryStatus.Preparing);
 
         System.out.println("\n--- PENDING DELIVERIES ---");
-        if (pendingDeliveries.length == 0) {
+        if (pendingDeliveries.isEmpty()) {
             System.out.println("No pending deliveries at the moment.");
             return;
         }
