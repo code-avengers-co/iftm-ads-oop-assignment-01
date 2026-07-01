@@ -1,101 +1,158 @@
 package dao;
 
+import model.Order;
 import model.OrderItem;
-import utils.SystemClock;
+import model.Product;
+import utils.DatabaseConnection;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OrderItemDao {
-    private OrderItem[] orderItemDb;
-    private int orderItemCount;
 
-    public OrderItemDao(int length){
-        orderItemDb = new OrderItem[length];
-        orderItemCount = 0;
-    }
+    public boolean saveOrderItem(OrderItem orderItem) {
+        String sql = "INSERT INTO order_item (order_id, product_id, quantity, unit_price) VALUES (?, ?, ?, ?)";
+        DatabaseConnection factory = new DatabaseConnection();
 
-    public boolean saveOrderItem(OrderItem orderItem){
-        if (orderItemCount >= orderItemDb.length) {
-            return false; // No more space to save new order item
-        }
+        try (Connection connection = factory.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-        orderItemDb[orderItemCount] = orderItem;
-        orderItemCount++;
+            stmt.setInt(1, orderItem.getOrder().getId());
+            stmt.setInt(2, orderItem.getProduct().getId());
+            stmt.setInt(3, orderItem.getQuantity());
+            stmt.setDouble(4, orderItem.getUnitPrice());
 
-        return true;
-    }
+            int rowsAffected = stmt.executeUpdate();
 
-    public OrderItem[] getOrderItems(){
-        OrderItem[] orderItems = new OrderItem[orderItemCount];
-        int currentIndex = 0;
-
-        for (int i = 0; i < orderItemCount; i++) {
-            if (orderItemDb[i] != null){
-                orderItems[currentIndex]= orderItemDb[i];
-                currentIndex++;
+            if (rowsAffected > 0) {
+                try (ResultSet rs = stmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        orderItem.setId(rs.getInt(1));
+                    }
+                }
+                return true;
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public List<OrderItem> getOrderItems() {
+        List<OrderItem> orderItems = new ArrayList<>();
+        String sql = "SELECT * FROM order_item";
+        DatabaseConnection factory = new DatabaseConnection();
+
+        try (Connection conn = factory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                orderItems.add(mapResultSetToOrderItem(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         return orderItems;
     }
 
-    public OrderItem findById(int id){
-        for (int i = 0; i < orderItemCount; i++) {
-            if (orderItemDb[i].getId() == id) {
-                return orderItemDb[i];
-            }
-        }
+    public OrderItem findById(int id) {
+        String sql = "SELECT * FROM order_item WHERE id = ?";
+        DatabaseConnection factory = new DatabaseConnection();
 
-        return null; // Order item not found
+        try (Connection conn = factory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToOrderItem(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public OrderItem[] findItemsByOrderId(int orderId){
-        OrderItem[] tempItems = new OrderItem[orderItemCount];
-        int count = 0;
+    public List<OrderItem> findItemsByOrderId(int orderId) {
+        List<OrderItem> items = new ArrayList<>();
+        String sql = "SELECT * FROM order_item WHERE order_id = ?";
+        DatabaseConnection factory = new DatabaseConnection();
 
-        for (int i = 0; i < orderItemCount; i++) {
-            if (orderItemDb[i].getOrder().getId() == orderId) {
-                tempItems[count] = orderItemDb[i];
-                count++;
+        try (Connection conn = factory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, orderId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    items.add(mapResultSetToOrderItem(rs));
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        OrderItem[] exactItem = new OrderItem[count];
-        for (int i = 0; i < count; i++) {
-            exactItem[i] = tempItems[i];
-        }
-
-        return exactItem;
+        return items;
     }
 
-    public boolean updateOrderItem(OrderItem updatedOrderItem){
-        OrderItem orderItem = findById(updatedOrderItem.getId());
-        if (orderItem == null) {
-            return false; // Order item not found
+    public boolean updateOrderItem(OrderItem orderItem) {
+        String sql = "UPDATE order_item SET quantity = ?, unit_price = ? WHERE id = ?";
+        DatabaseConnection factory = new DatabaseConnection();
+
+        try (Connection conn = factory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, orderItem.getQuantity());
+            stmt.setDouble(2, orderItem.getUnitPrice());
+            stmt.setInt(3, orderItem.getId());
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        orderItem.setQuantity(updatedOrderItem.getQuantity());
-        orderItem.setUnitPrice(updatedOrderItem.getUnitPrice());
-        orderItem.setUpdatedAt(SystemClock.now());
-
-        return true;
+        return false;
     }
 
-    public boolean deleteOrderItem(int id){
-        int indexToDelete = -1;
-        for (int i = 0; i < orderItemCount; i++) {
-            if (orderItemDb[i].getId() == id){
-                indexToDelete = i;
-                break;
-            }
+    public boolean deleteOrderItem(int id) {
+        String sql = "DELETE FROM order_item WHERE id = ?";
+        DatabaseConnection factory = new DatabaseConnection();
+
+        try (Connection conn = factory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return false;
+    }
 
-        if (indexToDelete == -1){
-            return false; // Order item not found
-        }
+    private OrderItem mapResultSetToOrderItem(ResultSet rs) throws SQLException {
+        OrderDao orderDao = new OrderDao();
+        ProductDao productDao = new ProductDao();
 
-        orderItemDb[indexToDelete] = orderItemDb[orderItemCount - 1];
-        orderItemDb[orderItemCount - 1] = null;
-        orderItemCount--;
+        Order order = orderDao.findById(rs.getInt("order_id"));
+        Product product = productDao.findById(rs.getInt("product_id"));
 
-        return true;
+        return new OrderItem(
+                rs.getInt("id"),
+                order,
+                product,
+                rs.getInt("quantity"),
+                rs.getDouble("unit_price"),
+                rs.getInt("quantity") * rs.getDouble("unit_price"), // sub_total mock
+                utils.SystemClock.now(), // created_at mock
+                utils.SystemClock.now()  // updated_at mock
+        );
     }
 }
