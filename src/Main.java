@@ -24,7 +24,7 @@ public class Main {
         StockController stockController = new StockController(stockMovementDao, productDao);
         OrderController orderController = new OrderController(orderDao);
         ReportController reportController = new ReportController(orderDao);
-        DeliveryController deliveryController = new DeliveryController(deliveryDao);
+        DeliveryController deliveryController = new DeliveryController(deliveryDao, orderDao);
         TriggerController triggerController = new TriggerController();
         CheckoutController checkoutController = new CheckoutController(
                 cartDao,
