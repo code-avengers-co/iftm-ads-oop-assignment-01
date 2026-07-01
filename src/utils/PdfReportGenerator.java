@@ -17,11 +17,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class PdfReportGenerator {
+    private static String DIRECTORY_BASE = "pdfs";
+
     public static void generateOrdersReport(List<Order> orders, String destPath) {
+        String finalPath = DIRECTORY_BASE + "/" + destPath;
         Document document = new Document();
 
         try {
-            PdfWriter.getInstance(document, new FileOutputStream(destPath));
+            PdfWriter.getInstance(document, new FileOutputStream(finalPath));
             document.open();
 
             Font titleFont = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
@@ -80,7 +83,7 @@ public class PdfReportGenerator {
 
             document.add(table);
 
-            System.out.println("Relatório PDF de pedidos gerado com sucesso em: " + destPath);
+            System.out.println("Relatório PDF de pedidos gerado com sucesso em: " + finalPath);
 
         } catch (DocumentException | IOException e) {
             e.printStackTrace();
