@@ -4,6 +4,7 @@ import controller.CartController;
 import controller.CheckoutController;
 import model.CartItem;
 import utils.InputUtils;
+import java.util.List;
 
 public class CartView {
     private CartController cartController;
@@ -67,9 +68,9 @@ public class CartView {
     private void handleViewCart() {
         System.out.println("\n--- YOUR CART ---");
 
-        CartItem[] items = cartController.getLoggedUserCartItems();
+        List<CartItem> items = cartController.getLoggedUserCartItems();
 
-        if (items.length == 0) {
+        if (items.isEmpty()) {
             System.out.println("Your cart is empty.");
             return;
         }

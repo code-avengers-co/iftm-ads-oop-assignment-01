@@ -1,97 +1,179 @@
 package dao;
 
+import model.Coupon;
 import model.Order;
-import utils.SystemClock;
+import model.User;
+import model.enums.OrderStatus;
+import utils.DatabaseConnection;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OrderDao {
-    private Order[] orderDb;
-    private int orderCount;
 
-    public OrderDao(int length){
-        orderDb = new Order[length];
-        orderCount = 0;
-    }
+    public boolean saveOrder(Order order) {
+        String sql = "INSERT INTO orders (user_id, coupon_id, status, total_value, payment_method, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        DatabaseConnection factory = new DatabaseConnection();
 
-    public boolean saveOrder(Order order){
-        if (orderCount >= orderDb.length) {
-            return false; // No more space to save new order
-        }
+        try (Connection connection = factory.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-        orderDb[orderCount] = order;
-        orderCount++;
-
-        return true;
-    }
-
-    public Order[] getAllOrders() {
-        Order[] exactOrders = new Order[orderCount];
-        for (int i = 0; i < orderCount; i++) {
-            exactOrders[i] = orderDb[i];
-        }
-        return exactOrders;
-    }
-    
-    public Order findById(int id){
-        for (int i = 0; i < orderCount; i++) {
-            if (orderDb[i].getId() == id) {
-                return orderDb[i];
+            stmt.setInt(1, order.getUser().getId());
+            if (order.getCoupon() != null) {
+                stmt.setInt(2, order.getCoupon().getId());
+            } else {
+                stmt.setNull(2, Types.INTEGER);
             }
-        }
+            stmt.setString(3, order.getStatus().name());
+            stmt.setDouble(4, order.getTotalValue());
+            stmt.setString(5, order.getPaymentMethod());
+            stmt.setTimestamp(6, Timestamp.valueOf(order.getCreatedAt()));
+            stmt.setTimestamp(7, Timestamp.valueOf(order.getUpdatedAt()));
 
-        return null; // Order not found
-    }
+            int rowsAffected = stmt.executeUpdate();
 
-    public Order[] findOrdersByUserId(int userId) {
-        Order[] tempOrders = new Order[orderCount];
-        int count = 0;
-
-        for (int i = 0; i < orderCount; i++) {
-            if (orderDb[i].getUser().getId() == userId) {
-                tempOrders[count] = orderDb[i];
-                count++;
+            if (rowsAffected > 0) {
+                try (ResultSet rs = stmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        order.setId(rs.getInt(1));
+                    }
+                }
+                return true;
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        Order[] exactOrders = new Order[count];
-        for (int i = 0; i < count; i++) {
-            exactOrders[i] = tempOrders[i];
-        }
-
-        return exactOrders;
+        return false;
     }
 
-    public boolean updateOrder(Order updatedOrder){
-        Order order = findById(updatedOrder.getId());
-        if (order == null) {
-            return false; // Order not found
-        }
+    public List<Order> getAllOrders() {
+        List<Order> allOrders = new ArrayList<>();
+        String sql = "SELECT * FROM orders";
+        DatabaseConnection factory = new DatabaseConnection();
 
-        order.setStatus(updatedOrder.getStatus());
-        order.setCoupon(updatedOrder.getCoupon());
-        order.setTotalValue(updatedOrder.getTotalValue());
-        order.setPaymentMethod(updatedOrder.getPaymentMethod());
-        order.setUpdatedAt(SystemClock.now());
+        try (Connection conn = factory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
-        return true;
-    }
-
-    public boolean deleteOrder(int id){
-        int indexToDelete = -1;
-        for (int i = 0; i < orderCount; i++) {
-            if (orderDb[i].getId() == id){
-                indexToDelete = i;
-                break;
+            while (rs.next()) {
+                allOrders.add(mapResultSetToOrder(rs));
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-        if (indexToDelete == -1){
-            return false; // Order not found
+        return allOrders;
+    }
+
+    public Order findById(int id) {
+        String sql = "SELECT * FROM orders WHERE id = ?";
+        DatabaseConnection factory = new DatabaseConnection();
+
+        try (Connection conn = factory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToOrder(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<Order> findOrdersByUserId(int userId) {
+        List<Order> orders = new ArrayList<>();
+        String sql = "SELECT * FROM orders WHERE user_id = ?";
+        DatabaseConnection factory = new DatabaseConnection();
+
+        try (Connection conn = factory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    orders.add(mapResultSetToOrder(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return orders;
+    }
+
+    public boolean updateOrder(Order order) {
+        String sql = "UPDATE orders SET status = ?, coupon_id = ?, total_value = ?, payment_method = ?, updated_at = ? WHERE id = ?";
+        DatabaseConnection factory = new DatabaseConnection();
+
+        try (Connection conn = factory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, order.getStatus().name());
+            if (order.getCoupon() != null) {
+                stmt.setInt(2, order.getCoupon().getId());
+            } else {
+                stmt.setNull(2, Types.INTEGER);
+            }
+            stmt.setDouble(3, order.getTotalValue());
+            stmt.setString(4, order.getPaymentMethod());
+            stmt.setTimestamp(5, Timestamp.valueOf(order.getUpdatedAt()));
+            stmt.setInt(6, order.getId());
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean deleteOrder(int id) {
+        String sql = "DELETE FROM orders WHERE id = ?";
+        DatabaseConnection factory = new DatabaseConnection();
+
+        try (Connection conn = factory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private Order mapResultSetToOrder(ResultSet rs) throws SQLException {
+        PersonDao personDao = new PersonDao();
+        UserDao userDao = new UserDao(personDao);
+        CouponDao couponDao = new CouponDao();
+
+        User user = userDao.findById(rs.getInt("user_id"));
+        
+        Coupon coupon = null;
+        int couponId = rs.getInt("coupon_id");
+        if (!rs.wasNull()) {
+            coupon = couponDao.findById(couponId);
         }
 
-        orderDb[indexToDelete] = orderDb[orderCount - 1];
-        orderDb[orderCount - 1] = null;
-        orderCount--;
-
-        return true;
+        return new Order(
+                rs.getInt("id"),
+                user,
+                coupon,
+                OrderStatus.valueOf(rs.getString("status")),
+                rs.getDouble("total_value"),
+                rs.getString("payment_method"),
+                rs.getTimestamp("created_at").toLocalDateTime(),
+                rs.getTimestamp("updated_at").toLocalDateTime()
+        );
     }
 }

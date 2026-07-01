@@ -1,6 +1,6 @@
 # 📦 Inventory Management System
 
-Sistema de gerenciamento de estoque desenvolvido em **Java puro**, utilizando arquitetura **MVC** (Model-View-Controller) com persistência em memória (arrays). Projeto acadêmico focado em Programação Orientada a Objetos.
+Sistema de gerenciamento de estoque desenvolvido em **Java puro**, utilizando arquitetura **MVC** (Model-View-Controller) com persistência em banco de dados **MySQL**. Projeto acadêmico focado em Programação Orientada a Objetos.
 
 ## 📋 Sobre o Projeto
 
@@ -94,7 +94,7 @@ src/
 │       ├── MovementType.java    # IN, OUT, ADJUST
 │       ├── DiscountType.java    # Fixed, Percentual
 │       └── RevenuePeriod.java   # DAILY, MONTHLY, YEARLY
-├── dao/                         # Persistência em memória (arrays)
+├── dao/                         # Persistência em Banco de Dados (JDBC)
 │   ├── ProductDao.java
 │   ├── PersonDao.java
 │   ├── UserDao.java
@@ -127,39 +127,26 @@ src/
 │   ├── ReportView.java
 │   └── DeliveryView.java
 └── utils/                       # Classes utilitárias
-    ├── CreationIdUtils.java     # Geração sequencial de IDs
+    ├── DatabaseConnection.java  # Gerenciador de conexão JDBC com MySQL
     ├── InputUtils.java          # Leitura segura de inputs do console
+    ├── PasswordUtils.java       # Hashing de senhas
+    ├── PdfReportGenerator.java  # Geração de relatórios PDF com iText
     ├── SystemClock.java         # Relógio virtual para simulação de tempo
     └── UserSession.java         # Gerenciamento de sessão do usuário logado
 ```
 
 ### Decisões Técnicas
 
-- **Persistência em memória** — Todos os dados são armazenados em arrays com tamanho fixo (100 por padrão). Não utiliza banco de dados.
-- **Geração de IDs** — Cada entidade gera seu próprio ID sequencial automaticamente no construtor, via `CreationIdUtils`.
-- **Soft Delete** — Produtos são desativados (`active = false`) em vez de removidos do array.
+- **Persistência em Banco de Dados** — Todos os dados são armazenados e consultados em um banco de dados relacional **MySQL**.
+- **Geração de Relatórios** — Implementada a exportação de relatórios em PDF utilizando a biblioteca `iText`.
+- **Soft Delete** — Produtos são desativados (`active = false`) em vez de removidos fisicamente do banco de dados.
 - **Auditoria** — Todas as entidades possuem `createdAt` e `updatedAt`, atualizados automaticamente pelos DAOs.
 
 ## 🚀 Como Executar
 
-### Pré-requisitos
-- **Java 17+** (utiliza Text Blocks)
+O projeto agora requer um banco de dados **MySQL** e a configuração da biblioteca `iTextPDF`.
 
-### Compilar e Rodar
-
-```bash
-# Compilar
-javac -d out -sourcepath src src/Main.java
-
-# Executar
-java -cp out Main
-```
-
-### Credenciais de Acesso
-
-| Perfil | Usuário | Senha |
-|---|---|---|
-| Administrador | `admin` | `admin` |
+**👉 [Clique aqui para ler o Tutorial de Instalação e Execução completo](docs/tutorial-execucao.md)**, com o passo a passo dedicado ao professor para configurar o ambiente e executar o sistema.
 
 ## 🎮 Como Usar
 

@@ -9,6 +9,9 @@ import model.Product;
 import model.User;
 import utils.UserSession;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CartController {
     private CartDao cartDao;
     private CartItemDao cartItemDao;
@@ -46,7 +49,7 @@ public class CartController {
         }
 
         // 3. Iterate over items of cart and try to find duplicates
-        CartItem[] cartItems = cartItemDao.findItemsByCartId(cart.getId());
+        List<CartItem> cartItems = cartItemDao.findItemsByCartId(cart.getId());
 
         for (CartItem cartItem : cartItems){
             // 3.1 Find a duplicate
@@ -68,9 +71,9 @@ public class CartController {
         return cartItemDao.saveCartItem(newCartItem);
     }
 
-    public CartItem[] getLoggedUserCartItems() {
+    public List<CartItem> getLoggedUserCartItems() {
         if (!UserSession.isLoggedIn()) {
-            return new CartItem[0]; // User is not logged in, return empty array
+            return new ArrayList<>(); // User is not logged in, return empty array
         }
 
         int userId = UserSession.getLoggedUser().getId();
@@ -78,7 +81,7 @@ public class CartController {
 
         // If there is no open cart for the user, return an empty array
         if (openCart == null) {
-            return new CartItem[0];
+            return new ArrayList<>();
         }
 
         // Return the items of the open cart
@@ -86,7 +89,7 @@ public class CartController {
     }
 
     public double getLoggedUserCartTotal() {
-        CartItem[] items = getLoggedUserCartItems();
+        List<CartItem> items = getLoggedUserCartItems();
         double total = 0;
 
         for (CartItem item : items) {
@@ -108,7 +111,7 @@ public class CartController {
             return false;
         }
 
-        CartItem[] items = cartItemDao.findItemsByCartId(cart.getId());
+        List<CartItem> items = cartItemDao.findItemsByCartId(cart.getId());
 
         for (CartItem item : items) {
             if (item.getProduct().getId() == productId) {

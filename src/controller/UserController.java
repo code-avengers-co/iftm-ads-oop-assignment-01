@@ -6,6 +6,7 @@ import model.Person;
 import model.User;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class UserController {
     private UserDao userDao;
@@ -14,13 +15,6 @@ public class UserController {
     public UserController(UserDao userDao, PersonDao personDao) {
         this.userDao = userDao;
         this.personDao = personDao;
-
-        Person person = new Person("Admin", LocalDate.of(1990, 1, 1), "123456789");
-        personDao.savePerson(person);
-
-        User admin = new User(person, "admin", "admin");
-        admin.setAdmin(true);
-        userDao.saveUser(admin);
     }
 
     public boolean registerUser(
@@ -46,18 +40,11 @@ public class UserController {
         return true;
     }
 
-    public User[] getUsers(){
+    public List<User> getUsers(){
         return userDao.getUsers();
     }
 
     public User authenticate(String username, String password) {
-        User[] users = userDao.getUsers();
-        for (User user : users) {
-            if (username.equals(user.getUsername()) && password.equals(user.getPassword())) {
-                return user; // Authentication successful
-            }
-        }
-
-        return null; // Authentication failed
+        return userDao.authenticate(username, password); 
     }
 }

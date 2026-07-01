@@ -6,6 +6,7 @@ import utils.InputUtils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.Scanner;
 
 public class UserView {
@@ -86,9 +87,9 @@ public class UserView {
 
     private void renderListUsers(){
         System.out.println("Listing all users...");
-        User[] users = userController.getUsers();
+        List<User> users = userController.getUsers();
 
-        if (users.length == 0) {
+        if (users.isEmpty()) {
             System.out.println("No users registered yet.");
             return;
         }

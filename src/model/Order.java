@@ -1,7 +1,7 @@
 package model;
 
 import model.enums.OrderStatus;
-import utils.CreationIdUtils;
+
 import utils.SystemClock;
 
 import java.time.LocalDateTime;
@@ -17,7 +17,6 @@ public class Order {
     private LocalDateTime updatedAt;
 
     public Order(User user, double totalValue, String paymentMethod) {
-        this.id = CreationIdUtils.generateOrderId();
         this.user = user;
         this.totalValue = totalValue;
         this.paymentMethod = paymentMethod;
@@ -26,6 +25,21 @@ public class Order {
         this.coupon = null;
         this.createdAt = SystemClock.now();
         this.updatedAt = SystemClock.now();
+    }
+
+    public Order(int id, User user, Coupon coupon, OrderStatus status, double totalValue, String paymentMethod, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.user = user;
+        this.coupon = coupon;
+        this.status = status;
+        this.totalValue = totalValue;
+        this.paymentMethod = paymentMethod;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getId() {

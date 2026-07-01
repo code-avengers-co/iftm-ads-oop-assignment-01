@@ -1,102 +1,156 @@
 package dao;
 
+import model.Product;
 import model.StockMovement;
-import utils.SystemClock;
+import model.enums.MovementType;
+import utils.DatabaseConnection;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StockMovementDao {
-    private StockMovement[] stockMovementDb;
-    private int stockMovementCount;
-
-    public  StockMovementDao(int length){
-        stockMovementDb = new StockMovement[length];
-        stockMovementCount = 0;
-    }
 
     public boolean saveStockMovement(StockMovement stockMovement) {
-        if (stockMovementCount >= stockMovementDb.length){
-            return false; // No more space to save new stock movement
+        String sql = "INSERT INTO stock_movement (product_id, quantity, movement_type, unit_value, created_at) VALUES (?, ?, ?, ?, ?)";
+        DatabaseConnection factory = new DatabaseConnection();
+
+        try (Connection connection = factory.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setInt(1, stockMovement.getProduct().getId());
+            stmt.setInt(2, stockMovement.getQuantity());
+            stmt.setString(3, stockMovement.getType().name());
+            stmt.setDouble(4, stockMovement.getUnitValue());
+            stmt.setTimestamp(5, Timestamp.valueOf(stockMovement.getCreatedAt()));
+
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                try (ResultSet rs = stmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        stockMovement.setId(rs.getInt(1));
+                    }
+                }
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        stockMovementDb[stockMovementCount] = stockMovement;
-        stockMovementCount++;
-
-        return true;
+        return false;
     }
 
-    public StockMovement findById(int id){
-        for (int i = 0; i < stockMovementCount; i++) {
-            if (stockMovementDb[i].getId() == id){
-                return stockMovementDb[i];
-            }
-        }
+    public StockMovement findById(int id) {
+        String sql = "SELECT * FROM stock_movement WHERE id = ?";
+        DatabaseConnection factory = new DatabaseConnection();
 
-        return null; // Stock movement not found
+        try (Connection conn = factory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToStockMovement(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public StockMovement[] getAllStockMovement(){
-        StockMovement[] stockMovements = new StockMovement[stockMovementCount];
-        int currentIndex = 0;
+    public List<StockMovement> getAllStockMovement() {
+        List<StockMovement> stockMovements = new ArrayList<>();
+        String sql = "SELECT * FROM stock_movement";
+        DatabaseConnection factory = new DatabaseConnection();
 
-        for (int i = 0; i < stockMovementCount; i++) {
-            if (stockMovementDb[i] != null){
-                stockMovements[currentIndex] = stockMovementDb[i];
-                currentIndex++;
+        try (Connection conn = factory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                stockMovements.add(mapResultSetToStockMovement(rs));
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         return stockMovements;
     }
 
-    public StockMovement[] findMovementsByProductId(int productId) {
-        StockMovement[] tempMovements = new StockMovement[stockMovementCount];
-        int count = 0;
+    public List<StockMovement> findMovementsByProductId(int productId) {
+        List<StockMovement> stockMovements = new ArrayList<>();
+        String sql = "SELECT * FROM stock_movement WHERE product_id = ?";
+        DatabaseConnection factory = new DatabaseConnection();
 
-        for (int i = 0; i < stockMovementCount; i++) {
-            if (stockMovementDb[i].getProduct().getId() == productId) {
-                tempMovements[count] = stockMovementDb[i];
-                count++;
+        try (Connection conn = factory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, productId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    stockMovements.add(mapResultSetToStockMovement(rs));
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        StockMovement[] exactMovements = new StockMovement[count];
-        for (int i = 0; i < count; i++) {
-            exactMovements[i] = tempMovements[i];
-        }
-
-        return exactMovements;
+        return stockMovements;
     }
 
-    public boolean updateStockMovement(StockMovement updatedStockMovement) {
-        StockMovement stockMovement = findById(updatedStockMovement.getId());
-        if (stockMovement == null) {
-            return false; // Stock movement not found
+    public boolean updateStockMovement(StockMovement stockMovement) {
+        String sql = "UPDATE stock_movement SET quantity = ?, movement_type = ?, unit_value = ? WHERE id = ?";
+        DatabaseConnection factory = new DatabaseConnection();
+
+        try (Connection conn = factory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, stockMovement.getQuantity());
+            stmt.setString(2, stockMovement.getType().name());
+            stmt.setDouble(3, stockMovement.getUnitValue());
+            stmt.setInt(4, stockMovement.getId());
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        stockMovement.setQuantity(updatedStockMovement.getQuantity());
-        stockMovement.setType(updatedStockMovement.getType());
-        stockMovement.setUnitValue(updatedStockMovement.getUnitValue());
-        stockMovement.setUpdatedAt(SystemClock.now());
-
-        return true;
+        return false;
     }
 
     public boolean deleteStockMovement(int id) {
-        int indexToDeleted = -1;
-        for (int i = 0; i < stockMovementCount; i++) {
-            if (this.stockMovementDb[i].getId() == id){
-                indexToDeleted = i;
-                break;
-            }
+        String sql = "DELETE FROM stock_movement WHERE id = ?";
+        DatabaseConnection factory = new DatabaseConnection();
+
+        try (Connection conn = factory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return false;
+    }
 
-        if (indexToDeleted == -1){
-            return false; // Stock not found!
-        }
+    private StockMovement mapResultSetToStockMovement(ResultSet rs) throws SQLException {
+        ProductDao productDao = new ProductDao();
+        Product product = productDao.findById(rs.getInt("product_id"));
 
-        stockMovementDb[indexToDeleted] = stockMovementDb[stockMovementCount - 1];
-        stockMovementDb[stockMovementCount - 1] = null;
-        stockMovementCount--;
-
-        return true;
+        return new StockMovement(
+                rs.getInt("id"),
+                product,
+                rs.getInt("quantity"),
+                MovementType.valueOf(rs.getString("movement_type")),
+                rs.getDouble("unit_value"),
+                rs.getTimestamp("created_at").toLocalDateTime(),
+                rs.getTimestamp("created_at").toLocalDateTime()
+        );
     }
 }

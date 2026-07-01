@@ -2,7 +2,10 @@ package view;
 
 import controller.OrderController;
 import model.Order;
+import utils.InputUtils;
+import utils.PdfReportGenerator;
 import utils.UserSession;
+import java.util.List;
 
 public class OrderView {
     private OrderController orderController;
@@ -15,9 +18,9 @@ public class OrderView {
         System.out.println("\n--- MY ORDERS HISTORY ---");
 
         int userId = UserSession.getLoggedUser().getId();
-        Order[] myOrders = orderController.getUserOrders(userId);
+        List<Order> myOrders = orderController.getUserOrders(userId);
 
-        if (myOrders.length == 0) {
+        if (myOrders.isEmpty()) {
             System.out.println("You haven't placed any orders yet.");
             return;
         }
@@ -30,5 +33,16 @@ public class OrderView {
                     " | Payment: " + order.getPaymentMethod());
         }
         System.out.println("-------------------------");
+        
+        System.out.println("\nOptions:");
+        System.out.println("1 - Download PDF Report");
+        System.out.println("0 - Back");
+        
+        int option = InputUtils.readInt("Choose an option: ", 0, 1);
+        if (option == 1) {
+            String fileName = "my_orders_report.pdf";
+            PdfReportGenerator.generateOrdersReport(myOrders, fileName);
+            System.out.println("PDF generated successfully!");
+        }
     }
 }

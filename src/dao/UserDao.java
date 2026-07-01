@@ -1,85 +1,193 @@
 package dao;
 
+import model.Person;
 import model.User;
+import utils.DatabaseConnection;
+import utils.PasswordUtils;
 import utils.SystemClock;
 
-public class UserDao {
-    private User[] userDb;
-    private int userCount;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
-    public UserDao(int length) {
-        this.userDb = new User[length];
-        this.userCount = 0;
+public class UserDao {
+    private PersonDao personDao;
+    public UserDao(PersonDao personDao) {
+        this.personDao = personDao;
     }
 
     public boolean saveUser(User user){
-        if (userCount >= userDb.length) {
-            return false; // No more space to save new user
+        String sql = "INSERT INTO user (person_id, username, password, created_at, updated_at, is_admin) VALUES (?, ?, ?, ?, ?, ?)";
+        DatabaseConnection factory = new DatabaseConnection();
+
+        try(Connection connection = factory.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setInt(1, user.getPerson().getId());
+            stmt.setString(2, user.getUsername());
+            String hashedPassword = PasswordUtils.hashPassword(user.getPassword());
+            stmt.setString(3, hashedPassword);
+            stmt.setTimestamp(4, java.sql.Timestamp.valueOf(user.getCreatedAt()));
+            stmt.setTimestamp(5, java.sql.Timestamp.valueOf(user.getUpdatedAt()));
+            stmt.setBoolean(6, user.isAdmin());
+
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        user.setId(generatedKeys.getInt(1));
+                    }
+                }
+
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-        userDb[userCount] = user;
-        userCount++;
-
-        return true;
+        return false;
     }
 
-    public User[] getUsers(){
-        User[] users = new User[userCount];
-        int currentIndex = 0;
+    public List<User> getUsers(){
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM user";
 
-        for (int i = 0; i < userCount; i++) {
-            if (userDb[i] != null){
-                users[currentIndex]= userDb[i];
-                currentIndex++;
+        DatabaseConnection factory = new DatabaseConnection();
+
+        try (Connection connection = factory.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet resultSet = stmt.executeQuery()) {
+
+            while (resultSet.next()) {
+                int personId = resultSet.getInt("person_id");
+                Person person = personDao.findById(personId);
+
+                User user = new User(
+                        resultSet.getInt("id"),
+                        person,
+                        resultSet.getString("username"),
+                        resultSet.getString("password"),
+                        resultSet.getTimestamp("created_at").toLocalDateTime(),
+                        resultSet.getTimestamp("updated_at").toLocalDateTime(),
+                        resultSet.getBoolean("is_admin")
+                );
+                users.add(user);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         return users;
     }
 
     public User findById(int id){
-        for (int i = 0; i < userCount; i++) {
-            if (userDb[i].getId() == id) {
-                return userDb[i];
+        String sql = "SELECT * FROM user WHERE id = ?";
+        DatabaseConnection factory = new DatabaseConnection();
+
+        try(Connection connection = factory.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+
+            try (ResultSet resultSet = stmt.executeQuery()) {
+                if (resultSet.next()) {
+                    int personId = resultSet.getInt("person_id");
+                    Person person = personDao.findById(personId);
+
+                    return new User(
+                            resultSet.getInt("id"),
+                            person,
+                            resultSet.getString("username"),
+                            resultSet.getString("password"),
+                            resultSet.getTimestamp("created_at").toLocalDateTime(),
+                            resultSet.getTimestamp("updated_at").toLocalDateTime(),
+                            resultSet.getBoolean("is_admin")
+                    );
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         return null; // User not found
     }
 
-    public boolean updateUser(User updatedUser) {
-        User user = findById(updatedUser.getId());
-        if (user == null) {
-            return false; // User not found
+    public User authenticate(String username, String rawPassword){
+        String sql = "SELECT * FROM user WHERE username = ? and password = ?";
+        DatabaseConnection factory = new DatabaseConnection();
+
+        try(Connection connection = factory.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setString(1, username);
+
+            String hashedPassword = PasswordUtils.hashPassword(rawPassword);
+            stmt.setString(2, hashedPassword);
+
+            try (ResultSet resultSet = stmt.executeQuery()) {
+                if (resultSet.next()) {
+                    int personId = resultSet.getInt("person_id");
+                    Person person = personDao.findById(personId);
+
+                    return new User(
+                            resultSet.getInt("id"),
+                            person,
+                            resultSet.getString("username"),
+                            resultSet.getString("password"),
+                            resultSet.getTimestamp("created_at").toLocalDateTime(),
+                            resultSet.getTimestamp("updated_at").toLocalDateTime(),
+                            resultSet.getBoolean("is_admin")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-        user.setPerson(updatedUser.getPerson());
-        user.setUsername(updatedUser.getUsername());
-        user.setPassword(updatedUser.getPassword());
-        user.setUpdatedAt(SystemClock.now());
-        user.setAdmin(updatedUser.isAdmin());
+        return null; // Authentication failed
+    }
 
-        return true;
+    public boolean updateUser(User updatedUser) {
+        String sql = "UPDATE user SET person_id = ?, username = ?, password = ?, updated_at = ?, is_admin = ? WHERE id = ?";
+        DatabaseConnection factory = new DatabaseConnection();
+
+        try(Connection connection = factory.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setInt(1, updatedUser.getPerson().getId());
+            stmt.setString(2, updatedUser.getUsername());
+            stmt.setString(3, updatedUser.getPassword());
+            stmt.setTimestamp(4, java.sql.Timestamp.valueOf(SystemClock.now()));
+            stmt.setBoolean(5, updatedUser.isAdmin());
+            stmt.setInt(6, updatedUser.getId());
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     public boolean deleteUser(int id) {
-        int indexToDeleted = -1;
-        for (int i = 0; i < userCount; i++) {
-            if (this.userDb[i].getId() == id){
-                indexToDeleted = i;
-                break;
-            }
+        String sql = "DELETE FROM user WHERE id = ?";
+        DatabaseConnection factory = new DatabaseConnection();
+
+        try(Connection connection = factory.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-        if (indexToDeleted == -1){
-            return false; // User not found
-        }
-
-        // Shift the last user to index to be deleted and nullify the last position
-        userDb[indexToDeleted] = userDb[userCount - 1];
-        userDb[userCount - 1] = null;
-        userCount--;
-
-        return true;
+        return false; // User not found or deletion failed
     }
 }

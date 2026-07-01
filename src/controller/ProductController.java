@@ -3,6 +3,8 @@ package controller;
 import dao.ProductDao;
 import model.Product;
 
+import java.util.List;
+
 
 public class ProductController {
     private ProductDao productDao;
@@ -11,15 +13,15 @@ public class ProductController {
         this.productDao = productDao;
     }
 
-    public boolean registerProduct(String name, double price) {
+    public boolean registerProduct(String name, String description, double price) {
         // 1. Create the product (ID is auto-generated in constructor)
-        Product newProduct = new Product(name, price);
+        Product newProduct = new Product(name, description, price);
 
         // 2. Send to DAO
         return productDao.saveProduct(newProduct);
     }
 
-    public Product[] getActiveProducts() {
+    public List<Product> getActiveProducts() {
         return productDao.getActiveProducts();
     }
 
@@ -28,7 +30,7 @@ public class ProductController {
         return productDao.findById(productId) != null;
     }
 
-    public boolean updateProduct(int id, String name, double price) {
+    public boolean updateProduct(int id, String name, String description,double price) {
         Product product = productDao.findById(id);
         if (product == null) {
             return false;
@@ -36,6 +38,7 @@ public class ProductController {
 
         product.setName(name);
         product.setPrice(price);
+        product.setDescription(description);
 
         return productDao.updateProduct(product);
     }

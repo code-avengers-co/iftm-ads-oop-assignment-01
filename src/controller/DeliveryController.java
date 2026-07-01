@@ -1,31 +1,31 @@
 package controller;
 
 import dao.DeliveryDao;
+import dao.OrderDao;
 import model.Delivery;
+import model.Order;
 import model.enums.DeliveryStatus;
 import utils.SystemClock;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DeliveryController {
     private DeliveryDao deliveryDao;
+    private OrderDao orderDao;
 
-    public DeliveryController(DeliveryDao deliveryDao) {
+    public DeliveryController(DeliveryDao deliveryDao, OrderDao orderDao) {
         this.deliveryDao = deliveryDao;
+        this.orderDao = orderDao;
     }
 
-    public Delivery[] getDeliveriesByStatus(DeliveryStatus status) {
-        Delivery[] allDeliveries = deliveryDao.getAllDeliveries();
-        int count = 0;
+    public List<Delivery> getDeliveriesByStatus(DeliveryStatus status) {
+        List<Delivery> allDeliveries = deliveryDao.getAllDeliveries();
+        List<Delivery> filteredDeliveries = new ArrayList<>();
 
-        for (Delivery delivery : allDeliveries) {
-            if (delivery.getStatus() == status) count++;
-        }
-
-        Delivery[] filteredDeliveries = new Delivery[count];
-        int index = 0;
         for (Delivery d : allDeliveries) {
             if (d.getStatus() == status) {
-                filteredDeliveries[index] = d;
-                index++;
+                filteredDeliveries.add(d);
             }
         }
 
@@ -41,8 +41,17 @@ public class DeliveryController {
 
         delivery.setCarrier(carrier);
         delivery.setTrackingCode(trackingCode);
+        delivery.setStatus(DeliveryStatus.Shipped);
+        delivery.setShippingDate(SystemClock.today());
         delivery.setUpdatedAt(SystemClock.now());
 
-        return deliveryDao.updateDelivery(delivery);
+        if (deliveryDao.updateDelivery(delivery)) {
+            Order order = delivery.getOrder();
+            order.setStatus(model.enums.OrderStatus.Shipped);
+            order.setUpdatedAt(SystemClock.now());
+            return orderDao.updateOrder(order);
+        }
+        
+        return false;
     }
 }

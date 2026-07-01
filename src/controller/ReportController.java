@@ -6,6 +6,8 @@ import model.enums.OrderStatus;
 import model.enums.RevenuePeriod;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReportController {
     private OrderDao orderDao;
@@ -14,28 +16,21 @@ public class ReportController {
         this.orderDao = orderDao;
     }
 
-    public Order[] getOrdersByStatus(OrderStatus status) {
-        Order[] allOrders = orderDao.getAllOrders();
-        Order[] tempOrders = new Order[allOrders.length];
-        int count = 0;
+    public List<Order> getOrdersByStatus(OrderStatus status) {
+        List<Order> allOrders = orderDao.getAllOrders();
+        List<Order> exactOrders = new ArrayList<>();
 
         for (Order order : allOrders) {
             if (order.getStatus() == status) {
-                tempOrders[count] = order;
-                count++;
+                exactOrders.add(order);
             }
-        }
-
-        Order[] exactOrders = new Order[count];
-        for (int i = 0; i < count; i++) {
-            exactOrders[i] = tempOrders[i];
         }
 
         return exactOrders;
     }
 
     public double calculateRevenue(RevenuePeriod period, LocalDate referenceDate) {
-        Order[] allOrders = orderDao.getAllOrders();
+        List<Order> allOrders = orderDao.getAllOrders();
         double totalRevenue = 0;
 
         for (Order order : allOrders) {

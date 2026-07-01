@@ -1,7 +1,7 @@
 package model;
 
 import model.enums.MovementType;
-import utils.CreationIdUtils;
+
 import utils.SystemClock;
 
 import java.time.LocalDateTime;
@@ -16,13 +16,26 @@ public class StockMovement {
     private LocalDateTime updatedAt;
 
     public StockMovement(Product product, int quantity, MovementType type, double unitValue) {
-        this.id = CreationIdUtils.generateStockMovementId();
         this.product = product;
         this.quantity = quantity;
         this.type = type;
         this.unitValue = unitValue;
         this.createdAt = SystemClock.now();
         this.updatedAt = SystemClock.now();
+    }
+
+    public StockMovement(int id, Product product, int quantity, MovementType type, double unitValue, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.product = product;
+        this.quantity = quantity;
+        this.type = type;
+        this.unitValue = unitValue;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getId() {
