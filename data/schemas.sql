@@ -1,7 +1,6 @@
 USE
 inventory_db;
 
--- 1. Tabelas Independentes (Não possuem chaves estrangeiras)
 CREATE TABLE person
 (
     id         INT AUTO_INCREMENT PRIMARY KEY,
@@ -37,11 +36,10 @@ CREATE TABLE coupon
     updated_at     DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- 2. Tabelas Nível 1 (Dependem apenas de uma tabela)
 CREATE TABLE user
 (
     id         INT AUTO_INCREMENT PRIMARY KEY,
-    person_id  INT UNIQUE         NOT NULL, -- UNIQUE pois é uma relação 1 para 1
+    person_id  INT UNIQUE         NOT NULL,
     username   VARCHAR(50) UNIQUE NOT NULL,
     password   VARCHAR(255)       NOT NULL,
     is_admin   BOOLEAN  DEFAULT FALSE,
@@ -71,7 +69,6 @@ CREATE TABLE cart
     FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE
 );
 
--- 3. Tabelas Nível 2 (Dependem de várias tabelas)
 CREATE TABLE cart_item
 (
     id         INT AUTO_INCREMENT PRIMARY KEY,
@@ -87,7 +84,7 @@ CREATE TABLE orders
 (
     id             INT AUTO_INCREMENT PRIMARY KEY,
     user_id        INT            NOT NULL,
-    coupon_id      INT NULL, -- Pode ser nulo se o cliente não usar cupom
+    coupon_id      INT NULL,
     status         ENUM('Created', 'Paid', 'Preparation', 'Shipped', 'Delivered', 'Canceled') NOT NULL,
     total_value    DECIMAL(10, 2) NOT NULL,
     payment_method VARCHAR(50)    NOT NULL,
@@ -111,7 +108,7 @@ CREATE TABLE order_item
 CREATE TABLE delivery
 (
     id            INT AUTO_INCREMENT PRIMARY KEY,
-    order_id      INT UNIQUE NOT NULL, -- UNIQUE pois 1 pedido tem 1 entrega
+    order_id      INT UNIQUE NOT NULL,
     status        ENUM('Preparing', 'Shipped', 'InTransit', 'Delivered', 'Cancelled') NOT NULL,
     carrier       VARCHAR(100),
     tracking_code VARCHAR(100),
