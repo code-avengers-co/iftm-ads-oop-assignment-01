@@ -1,6 +1,6 @@
 package model;
 
-import utils.CreationIdUtils;
+
 import utils.SystemClock;
 
 import java.time.LocalDateTime;
@@ -15,13 +15,26 @@ public class CartItem {
     private LocalDateTime updatedAt;
 
     public CartItem(Cart cart, Product product, int quantity, double unitPrice) {
-        this.id = CreationIdUtils.generateCartItemId();
         this.cart = cart;
         this.product = product;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.createdAt = SystemClock.now();
         this.updatedAt = SystemClock.now();
+    }
+
+    public CartItem(int id, Cart cart, Product product, int quantity, double unitPrice, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.cart = cart;
+        this.product = product;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getId() {
