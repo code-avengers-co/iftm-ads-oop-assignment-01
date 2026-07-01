@@ -6,8 +6,10 @@ import model.enums.OrderStatus;
 import model.enums.RevenuePeriod;
 import utils.InputUtils;
 import utils.SystemClock;
+import utils.PdfReportGenerator;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class ReportView {
     private ReportController reportController;
@@ -56,10 +58,10 @@ public class ReportView {
             return;
         }
 
-        Order[] orders = reportController.getOrdersByStatus(statusSelected);
+        List<Order> orders = reportController.getOrdersByStatus(statusSelected);
 
         System.out.println("\n--- Orders with status: " + statusSelected + " ---");
-        if (orders.length == 0) {
+        if (orders.isEmpty()) {
             System.out.println("No orders found.");
             return;
         }
@@ -68,6 +70,18 @@ public class ReportView {
             System.out.println("ID: " + order.getId() + " | Date: " + order.getCreatedAt().toLocalDate() +
                     " | Total: R$" + String.format("%.2f", order.getTotalValue()) +
                     " | Client ID: " + order.getUser().getId());
+        }
+        
+        System.out.println("-------------------------");
+        System.out.println("\nOptions:");
+        System.out.println("1 - Download PDF Report");
+        System.out.println("0 - Back");
+        
+        int option = InputUtils.readInt("Choose an option: ", 0, 1);
+        if (option == 1) {
+            String fileName = "admin_status_report.pdf";
+            PdfReportGenerator.generateOrdersReport(orders, fileName);
+            System.out.println("PDF generated successfully!");
         }
     }
 

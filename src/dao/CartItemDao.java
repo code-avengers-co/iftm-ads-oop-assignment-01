@@ -1,102 +1,156 @@
 package dao;
 
+import model.Cart;
 import model.CartItem;
-import utils.SystemClock;
+import model.Product;
+import utils.DatabaseConnection;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CartItemDao {
-    private CartItem[] cartItemDb;
-    private int cartItemCount;
 
-    public CartItemDao(int length){
-        cartItemDb = new CartItem[length];
-        cartItemCount = 0;
-    }
+    public boolean saveCartItem(CartItem cartItem) {
+        String sql = "INSERT INTO cart_item (cart_id, product_id, quantity, unit_price) VALUES (?, ?, ?, ?)";
+        DatabaseConnection factory = new DatabaseConnection();
 
-    public boolean saveCartItem(CartItem cartItem){
-        if (cartItemCount >= cartItemDb.length) {
-            return false; // No more space to save new cart item
+        try (Connection connection = factory.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setInt(1, cartItem.getCart().getId());
+            stmt.setInt(2, cartItem.getProduct().getId());
+            stmt.setInt(3, cartItem.getQuantity());
+            stmt.setDouble(4, cartItem.getUnitPrice());
+
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                try (ResultSet rs = stmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        cartItem.setId(rs.getInt(1));
+                    }
+                }
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        cartItemDb[cartItemCount] = cartItem;
-        cartItemCount++;
-
-        return true;
+        return false;
     }
 
-    public CartItem[] getAllCartItems(){
-        CartItem[] allCartItems = new CartItem[cartItemCount];
+    public List<CartItem> getAllCartItems() {
+        List<CartItem> allCartItems = new ArrayList<>();
+        String sql = "SELECT * FROM cart_item";
+        DatabaseConnection factory = new DatabaseConnection();
 
-        int currentIndex = 0;
-        for (int i = 0; i < cartItemCount; i++) {
-            allCartItems[currentIndex] = cartItemDb[i];
-            currentIndex++;
+        try (Connection conn = factory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                allCartItems.add(mapResultSetToCartItem(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         return allCartItems;
     }
 
-    public CartItem findById(int id){
-        for (int i = 0; i < cartItemCount; i++) {
-            if (cartItemDb[i].getId() == id) {
-                return cartItemDb[i];
-            }
-        }
+    public CartItem findById(int id) {
+        String sql = "SELECT * FROM cart_item WHERE id = ?";
+        DatabaseConnection factory = new DatabaseConnection();
 
-        return null; // CartItem not found
+        try (Connection conn = factory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToCartItem(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public CartItem[] findItemsByCartId(int cartId){
-        // 1. Create an Array with max length
-        CartItem[] tempItems = new CartItem[cartItemCount];
-        int count = 0;
+    public List<CartItem> findItemsByCartId(int cartId) {
+        List<CartItem> items = new ArrayList<>();
+        String sql = "SELECT * FROM cart_item WHERE cart_id = ?";
+        DatabaseConnection factory = new DatabaseConnection();
 
-        // 2. Get the items
-        for (int i = 0; i < cartItemCount; i++) {
-            if (cartItemDb[i].getCart().getId() == cartId) {
-                tempItems[count] = cartItemDb[i];
-                count++;
+        try (Connection conn = factory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, cartId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    items.add(mapResultSetToCartItem(rs));
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        // 3. Create an array with the exact length and copy the items
-        CartItem[] exactItems = new CartItem[count];
-        for (int i = 0; i < count; i++) {
-            exactItems[i] = tempItems[i];
-        }
-
-        return exactItems;
+        return items;
     }
 
-    public boolean updateCartItem(CartItem updatedCartItem) {
-        CartItem cartItem = findById(updatedCartItem.getId());
-        if (cartItem == null) {
-            return false; // CartItem not found
+    public boolean updateCartItem(CartItem cartItem) {
+        String sql = "UPDATE cart_item SET quantity = ? WHERE id = ?";
+        DatabaseConnection factory = new DatabaseConnection();
+
+        try (Connection conn = factory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, cartItem.getQuantity());
+            stmt.setInt(2, cartItem.getId());
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        cartItem.setQuantity(updatedCartItem.getQuantity());
-        cartItem.setUpdatedAt(SystemClock.now());
-
-        return true;
+        return false;
     }
 
     public boolean deleteCartItem(int id) {
-        int indexToDeleted = -1;
-        for (int i = 0; i < cartItemCount; i++) {
-            if(cartItemDb[i].getId() == id){
-                indexToDeleted = i;
-                break;
-            }
+        String sql = "DELETE FROM cart_item WHERE id = ?";
+        DatabaseConnection factory = new DatabaseConnection();
+
+        try (Connection conn = factory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return false;
+    }
 
-        if (indexToDeleted == -1){
-            return false; // CartItem not found
-        }
+    private CartItem mapResultSetToCartItem(ResultSet rs) throws SQLException {
+        CartDao cartDao = new CartDao();
+        ProductDao productDao = new ProductDao();
 
-        // Shift the last cart item to the deleted index and set the last index to null
-        cartItemDb[indexToDeleted] = cartItemDb[cartItemCount - 1];
-        cartItemDb[cartItemCount - 1] = null;
-        cartItemCount--;
+        Cart cart = cartDao.findById(rs.getInt("cart_id"));
+        Product product = productDao.findById(rs.getInt("product_id"));
 
-        return true;
+        return new CartItem(
+                rs.getInt("id"),
+                cart,
+                product,
+                rs.getInt("quantity"),
+                rs.getDouble("unit_price"),
+                utils.SystemClock.now(), // created_at mock
+                utils.SystemClock.now()  // updated_at mock
+        );
     }
 }

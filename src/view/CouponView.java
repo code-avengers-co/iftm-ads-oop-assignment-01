@@ -8,6 +8,7 @@ import utils.InputUtils;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
+import java.util.List;
 
 public class CouponView {
     private CouponController couponController;
@@ -93,9 +94,9 @@ public class CouponView {
 
     private void renderListOfAllCoupons() {
         System.out.println("Listing all Coupons");
-        Coupon[] allCoupons = couponController.getCoupons();
+        List<Coupon> allCoupons = couponController.getCoupons();
 
-        if (allCoupons.length == 0) {
+        if (allCoupons.isEmpty()) {
             System.out.println("No Coupons Founded");
             return;
         }
@@ -104,9 +105,9 @@ public class CouponView {
     }
 
     private void renderDeleteCoupon() {
-        Coupon[] activeCoupons = couponController.getValidCoupons();
+        List<Coupon> activeCoupons = couponController.getValidCoupons();
 
-        if (activeCoupons.length == 0) {
+        if (activeCoupons.isEmpty()) {
             System.out.println("--- DELETE COUPON ---");
             System.out.println("No valid coupons available to delete.");
             return;
@@ -131,12 +132,12 @@ public class CouponView {
         }
     }
 
-    void showCouponList(String title, Coupon[] coupons) {
+    void showCouponList(String title, List<Coupon> coupons) {
         if (title != null && !title.isEmpty()) {
             System.out.println(title);
         }
 
-        if (coupons.length == 0){
+        if (coupons.isEmpty()){
             System.out.println("No Coupons Founded");
             return;
         }

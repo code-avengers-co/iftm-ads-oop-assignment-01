@@ -4,17 +4,17 @@ import view.*;
 
 public class Main {
     static void main(String[] args) {
-        // 1. Create DAO (Simulate DATABASE)
-        ProductDao productDao = new ProductDao(100);
-        PersonDao personDao = new PersonDao(100);
-        UserDao userDao = new UserDao(100);
-        CartDao cartDao = new CartDao(100);
-        CartItemDao cartItemDao = new CartItemDao(100);
-        OrderDao orderDao = new OrderDao(100);
-        OrderItemDao orderItemDao = new OrderItemDao(100);
-        StockMovementDao stockMovementDao = new StockMovementDao(100);
-        CouponDao couponDao = new CouponDao(100);
-        DeliveryDao deliveryDao = new DeliveryDao(100);
+        // 1. Create DAO instances
+        ProductDao productDao = new ProductDao();
+        PersonDao personDao = new PersonDao();
+        UserDao userDao = new UserDao(personDao);
+        CartDao cartDao = new CartDao();
+        CartItemDao cartItemDao = new CartItemDao();
+        OrderDao orderDao = new OrderDao();
+        OrderItemDao orderItemDao = new OrderItemDao();
+        StockMovementDao stockMovementDao = new StockMovementDao();
+        CouponDao couponDao = new CouponDao();
+        DeliveryDao deliveryDao = new DeliveryDao();
 
         // 2. Create Controllers
         ProductController productController = new ProductController(productDao);
@@ -24,8 +24,8 @@ public class Main {
         StockController stockController = new StockController(stockMovementDao, productDao);
         OrderController orderController = new OrderController(orderDao);
         ReportController reportController = new ReportController(orderDao);
-        DeliveryController deliveryController = new DeliveryController(deliveryDao);
-        TriggerController triggerController = new TriggerController(cartDao, cartItemDao, orderDao, deliveryDao);
+        DeliveryController deliveryController = new DeliveryController(deliveryDao, orderDao);
+        TriggerController triggerController = new TriggerController();
         CheckoutController checkoutController = new CheckoutController(
                 cartDao,
                 cartItemDao,

@@ -4,6 +4,7 @@ import dao.CouponDao;
 import model.Coupon;
 
 import model.enums.DiscountType;
+import java.util.List;
 
 import java.time.LocalDate;
 
@@ -19,11 +20,11 @@ public class CouponController {
     }
 
 
-    public Coupon[] getValidCoupons() {
+    public List<Coupon> getValidCoupons() {
         return couponDao.getValidCoupons();
     }
 
-    public Coupon[] getCoupons() {
+    public List<Coupon> getCoupons() {
         return couponDao.getCoupons();
     }
 

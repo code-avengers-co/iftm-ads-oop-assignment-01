@@ -1,7 +1,7 @@
 package model;
 
 import model.enums.DeliveryStatus;
-import utils.CreationIdUtils;
+
 import utils.SystemClock;
 
 import java.time.LocalDate;
@@ -19,7 +19,6 @@ public class Delivery {
     private LocalDateTime updatedAt;
 
     public Delivery(Order order) {
-        this.id = CreationIdUtils.generateDeliveryId();
         this.order = order;
         this.status = DeliveryStatus.Preparing;
         this.carrier = null;
@@ -28,6 +27,22 @@ public class Delivery {
         this.deliveryDate = null;
         this.createdAt = SystemClock.now();
         this.updatedAt = SystemClock.now();
+    }
+
+    public Delivery(int id, Order order, DeliveryStatus status, String carrier, String trackingCode, LocalDate shippingDate, LocalDate deliveryDate, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.order = order;
+        this.status = status;
+        this.carrier = carrier;
+        this.trackingCode = trackingCode;
+        this.shippingDate = shippingDate;
+        this.deliveryDate = deliveryDate;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getId() {
