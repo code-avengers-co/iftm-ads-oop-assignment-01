@@ -59,10 +59,10 @@ public class UserDao {
              PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet resultSet = stmt.executeQuery()) {
 
-                int personId = resultSet.getInt("person_id");
-            Person person = personDao.findById(personId);
-
             while (resultSet.next()) {
+                int personId = resultSet.getInt("person_id");
+                Person person = personDao.findById(personId);
+
                 User user = new User(
                         resultSet.getInt("id"),
                         person,
