@@ -2,6 +2,7 @@ package controller;
 
 import dao.OrderDao;
 import model.Order;
+import java.util.List;
 
 public class OrderController {
     private OrderDao orderDao;
@@ -10,7 +11,7 @@ public class OrderController {
         this.orderDao = orderDao;
     }
 
-    public Order[] getUserOrders(int userId) {
+    public List<Order> getUserOrders(int userId) {
         return orderDao.findOrdersByUserId(userId);
     }
 }
