@@ -6,6 +6,8 @@ import model.enums.OrderStatus;
 import utils.SystemClock;
 import utils.UserSession;
 
+import java.util.List;
+
 public class CheckoutController {
     private CartDao cartDao;
     private CartItemDao cartItemDao;
@@ -44,8 +46,8 @@ public class CheckoutController {
             return false; // Not cart open
         }
 
-        CartItem[] cartItems = cartItemDao.findItemsByCartId(cart.getId());
-        if (cartItems.length == 0) {
+        List<CartItem> cartItems = cartItemDao.findItemsByCartId(cart.getId());
+        if (cartItems.isEmpty()) {
             return false; // Empty cart
         }
 
